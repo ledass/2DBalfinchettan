@@ -542,7 +542,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         used_dbSize2 = (stats2['dataSize']/(1024*1024))+(stats2['indexSize']/(1024*1024))
         free_dbSize2 = 512-used_dbSize2
         await query.message.edit_text(
-            text=script.STATUS_TXT.format(total, users, chats, monsize, free),
+            text=script.STATUS_TXT.format((int(totalp)+int(totalsec)), users, chats, totalp, round(used_dbSize, 2), round(free_dbSize, 2), totalsec, round(used_dbSize2, 2), round(free_dbSize2, 2)),
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )
@@ -569,7 +569,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         used_dbSize2 = (stats2['dataSize']/(1024*1024))+(stats2['indexSize']/(1024*1024))
         free_dbSize2 = 512-used_dbSize2
         await query.message.edit_text(
-            text=script.STATUS_TXT.format(total, users, chats, monsize, free),
+            text=script.STATUS_TXT.format((int(totalp)+int(totalsec)), users, chats, totalp, round(used_dbSize, 2), round(free_dbSize, 2), totalsec, round(used_dbSize2, 2), round(free_dbSize2, 2)),
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )
