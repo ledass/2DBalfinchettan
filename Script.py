@@ -67,11 +67,23 @@ Editing the Bot 💐
     EXTRAMOD_TXT = """No Features 🚫 
 Thank U 🌪️
     """
-    STATUS_TXT = """★ 𝚃𝙾𝚃𝙰𝙻 𝙵𝙸𝙻𝙴𝚂: <code>{}</code>
-★ 𝚃𝙾𝚃𝙰𝙻 𝚄𝚂𝙴𝚁𝚂: <code>{}</code>
-★ 𝚃𝙾𝚃𝙰𝙻 𝙲𝙷𝙰𝚃𝚂: <code>{}</code>
-★ 𝚄𝚂𝙴𝙳 𝚂𝚃𝙾𝚁𝙰𝙶𝙴: <code>{}</code> 𝙼𝚒𝙱
-★ 𝙵𝚁𝙴𝙴 𝚂𝚃𝙾𝚁𝙰𝙶𝙴: <code>{}</code> 𝙼𝚒𝙱"""
+    STATUS_TXT = """<b>Tᴏᴛᴀʟ Fɪʟᴇs Fʀᴏᴍ Bᴏᴛʜ DBs: <code>{}</code>
+
+Bᴏᴛ Usᴇʀs ᴀɴᴅ Cʜᴀᴛs Cᴏᴜɴᴛ
+★ Tᴏᴛᴀʟ Usᴇʀs: <code>{}</code>
+★ Tᴏᴛᴀʟ Cʜᴀᴛs: <code>{}</code>
+
+Pʀɪᴍᴀʀʏ Dᴀᴛᴀʙᴀsᴇ Sᴛᴀᴛɪsᴛɪᴄs 
+★ Tᴏᴛᴀʟ Fɪʟᴇs: <code>{}</code>
+★ Usᴇᴅ Sᴛᴏʀᴀɢᴇ: <code>{} MB</code>
+★ Fʀᴇᴇ Sᴛᴏʀᴀɢᴇ: <code>{} MB</code>
+
+Sᴇᴄᴏɴᴅᴀʀʏ Dᴀᴛᴀʙᴀsᴇ Sᴛᴀᴛɪsᴛɪᴄs
+★ Tᴏᴛᴀʟ Fɪʟᴇs: <code>{}</code>
+★ Usᴇᴅ Sᴛᴏʀᴀɢᴇ: <code>{} MB</code>
+★ Fʀᴇᴇ Sᴛᴏʀᴀɢᴇ: <code>{} MB</code>
+</b>"""
+    
     LOG_TEXT_G = """#NewGroup
 Kuttu Bot 2 💫
 Group = {}(<code>{}</code>)
