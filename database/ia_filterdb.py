@@ -102,28 +102,18 @@ async def save_file(media):
             return True, 1
 
 
-
 async def get_search_results(chat_id, query, file_type=None, max_results=10, offset=0, filter=False):
     """For given query return (results, next_offset)"""
     if chat_id is not None:
         settings = await get_settings(int(chat_id))
+        max_results = 10  # Default max results
         try:
-            if settings['max_btn']:
-                max_results = 10
-            else:
-                max_results = int(MAX_B_TN)
-        except KeyError:
-            await save_group_settings(int(chat_id), 'max_btn', False)
-            settings = await get_settings(int(chat_id))
-            if settings['max_btn']:
-                max_results = 10
-            else:
-                max_results = int(MAX_B_TN)
+            max_results = 10
+        except NameError:
+            pass  # If MAX_B_TN is not defined, continue with the default
+
     query = query.strip()
-    #if filter:
-        #better ?
-        #query = query.replace(' ', r'(\s|\.|\+|\-|_)')
-        #raw_pattern = r'(\s|_|\-|\.|\+)' + query + r'(\s|_|\-|\.|\+)'
+    
     if not query:
         raw_pattern = '.'
     elif ' ' not in query:
@@ -146,8 +136,8 @@ async def get_search_results(chat_id, query, file_type=None, max_results=10, off
 
     total_results = ((await Media.count_documents(filter))+(await Media2.count_documents(filter)))
 
-    #verifies max_results is an even number or not
-    if max_results%2 != 0: #if max_results is an odd number, add 1 to make it an even number
+    # Ensures `max_results` is an even number
+    if max_results % 2 != 0:  # If `max_results` is odd, add 1 to make it even
         logger.info(f"Since max_results is an odd number ({max_results}), bot will use {max_results+1} as max_results to make it even.")
         max_results += 1
 
@@ -160,12 +150,12 @@ async def get_search_results(chat_id, query, file_type=None, max_results=10, off
     cursor2.skip(offset).limit(max_results)
     # Get list of files
     fileList2 = await cursor2.to_list(length=max_results)
-    if len(fileList2)<max_results:
-        next_offset = offset+len(fileList2)
-        cursorSkipper = (next_offset-(await Media2.count_documents(filter)))
-        cursor.skip(cursorSkipper if cursorSkipper>=0 else 0).limit(max_results-len(fileList2))
-        fileList1 = await cursor.to_list(length=(max_results-len(fileList2)))
-        files = fileList2+fileList1
+    if len(fileList2) < max_results:
+        next_offset = offset + len(fileList2)
+        cursorSkipper = (next_offset - (await Media2.count_documents(filter)))
+        cursor.skip(cursorSkipper if cursorSkipper >= 0 else 0).limit(max_results - len(fileList2))
+        fileList1 = await cursor.to_list(length=(max_results - len(fileList2)))
+        files = fileList2 + fileList1
         next_offset = next_offset + len(fileList1)
     else:
         files = fileList2
@@ -173,6 +163,7 @@ async def get_search_results(chat_id, query, file_type=None, max_results=10, off
     if next_offset >= total_results:
         next_offset = ''
     return files, next_offset, total_results
+
 
 async def get_bad_files(query, file_type=None, filter=False):
     """For given query return (results, next_offset)"""
