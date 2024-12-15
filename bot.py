@@ -11,7 +11,7 @@ from pyrogram import Client, __version__
 from pyrogram.raw.all import layer
 from database.ia_filterdb import Media, Media2, choose_mediaDB, db as clientDB
 from database.users_chats_db import db
-from info import SESSION, API_ID, API_HASH, BOT_TOKEN, LOG_STR, LOG_CHANNEL, SECONDDB_URI
+from info import SESSION, API_ID, API_HASH, BOT_TOKEN, LOG_STR, LOG_CHANNEL, SECONDDB_URI, DATABASE_URI
 from utils import temp
 from typing import Union, Optional, AsyncGenerator
 from pyrogram import types
@@ -54,7 +54,7 @@ class Bot(Client):
         stats = await clientDB.command('dbStats')
         #calculating the free db space from bytes to MB
         free_dbSize = round(512-((stats['dataSize']/(1024*1024))+(stats['indexSize']/(1024*1024))), 2)
-        if SECONDDB_URI and free_dbSize<10: #if the primary db have less than 10MB left, use second DB.
+        if SECONDDB_URI and free_dbSize<210: #if the primary db have less than 10MB left, use second DB.
             tempDict["indexDB"] = SECONDDB_URI
             logging.info(f"Since Primary DB have only {free_dbSize} MB left, Secondary DB will be used to store datas.")
         elif SECONDDB_URI is None:
@@ -69,8 +69,8 @@ class Bot(Client):
         temp.B_NAME = me.first_name
         self.username = '@' + me.username
         logging.info(f"{me.first_name} with for Pyrogram v{__version__} (Layer {layer}) started on {me.username}.")
-        logging.info(LOG_STR)
-        await self.send_message(chat_id=LOG_CHANNEL,text="Restart Successfully ✓\nKuttu Bot 2 💫")
+       # logging.info(LOG_STR)
+        await self.send_message(chat_id=LOG_CHANNEL,text="Restart Successfully ✓\nKuttu Bot 2 💫\n2db 👀")
         print("Og Eva Re-editeD ⚡")
 
         client = webserver.AppRunner(await bot_run())
