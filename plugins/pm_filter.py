@@ -122,9 +122,9 @@ async def advantage_spoll_choker(bot, query):
         return await query.message.delete()
     movies = SPELL_CHECK.get(query.message.reply_to_message.id)
     if not movies:
-        return await query.answer("OLD MESSAGE", show_alert=True)#script change
+        return await query.answer("Using Old Message", show_alert=True)#script change
     movie = movies[(int(movie_))]
-    await query.answer("Checking ...")#script change
+    await query.answer("Checking in DB....")#script change
     k = await manual_filters(bot, query.message, text=movie)
     if k == False:
         files, offset, total_results = await get_search_results(movie, offset=0, filter=True)
@@ -132,7 +132,7 @@ async def advantage_spoll_choker(bot, query):
             k = (movie, files, offset, total_results)
             await auto_filter(bot, query, k)
         else:
-            k = await query.message.edit("Movie Not Found :(")#script change
+            k = await query.message.edit("NOT FOUNT IN DB")#script change
             await asyncio.sleep(15)
             await k.delete()
 
@@ -751,11 +751,11 @@ async def advantage_spell_chok(client, msg):
         logger.exception(e)
         reqst_gle = mv_rqst.replace(" ", "+")
         button = [[
-                 InlineKeyboardButton('GᴏᴏGʟᴇ ', url=f"https://www.google.com/search?q={reqst_gle}")
+                 InlineKeyboardButton('Gᴏᴏɢʟᴇ ', url=f"https://www.google.com/search?q={reqst_gle}")
         ]]
         
         k = await msg.reply_text(
-            text="Cannot Find that Movie :(",
+            text="NOT FOUNT IN DB", #IN SCRIPT CHANGE DONOT CHANGE CODE
             reply_markup=InlineKeyboardMarkup(button),
             reply_to_message_id=msg.id
         )
@@ -766,10 +766,10 @@ async def advantage_spell_chok(client, msg):
     if not movies:
         reqst_gle = mv_rqst.replace(" ", "+")
         button = [[
-                 InlineKeyboardButton('GᴏᴏGʟᴇ ', url=f"https://www.google.com/search?q={reqst_gle}")
+                 InlineKeyboardButton('Gᴏᴏɢʟᴇ ', url=f"https://www.google.com/search?q={reqst_gle}")
         ]]   
         k = await msg.reply_text(
-            text="Cannot Find that Movie :(",
+            text="NOT FOUNT IN DB",  #DONOTCHANGE IN THIS CODE PLS CHANGE IN SCRIPT
             reply_markup=InlineKeyboardMarkup(button),
             reply_to_message_id=msg.id
         )
@@ -789,7 +789,7 @@ async def advantage_spell_chok(client, msg):
     ]
     btn.append([InlineKeyboardButton(text="✘ ᴄʟᴏsᴇ ✘", callback_data=f'spol#{reqstr1}#close_spellcheck')])
     spell_check_del = await msg.reply_text(
-        text="<b>Sᴘᴇʟʟɪɴɢ Mɪꜱᴛᴀᴋᴇ Bʀᴏ ‼️\n\nDᴏɴ'ᴛ Wᴏʀʀʏ 😊 Cʜᴏᴏꜱᴇ ᴛʜᴇ Cᴏʀʀᴇᴄᴛ ᴏɴᴇ Bᴇʟᴏᴡ 👇</b>",
+        text="<b>Sᴘᴇʟʟɪɴɢ Mɪꜱᴛᴀᴋᴇ Bʀᴏ ‼️\n\nᴅᴏɴ'ᴛ ᴡᴏʀʀʏ 😊 Cʜᴏᴏꜱᴇ ᴛʜᴇ ᴄᴏʀʀᴇᴄᴛ ᴏɴᴇ ʙᴇʟᴏᴡ 👇</b>",
         reply_markup=InlineKeyboardMarkup(btn),
         reply_to_message_id=msg.id
     )
@@ -797,7 +797,6 @@ async def advantage_spell_chok(client, msg):
     await spell_check_del.delete()
 
 #SPELL CHECK END
-
 async def manual_filters(client, message, text=False):
     group_id = message.chat.id
     name = text or message.text
