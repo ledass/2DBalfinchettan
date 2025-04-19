@@ -6,7 +6,7 @@ COPY requirements.txt /requirements.txt
 
 RUN cd /
 RUN pip3 install -U pip && pip3 install -U -r requirements.txt
-RUN mkdir /OGEva
-WORKDIR /OGEva
-COPY . /OGEva
+RUN mkdir /2DB
+WORKDIR /2DB
+COPY . /2DB
 CMD ["python", "bot.py"]
