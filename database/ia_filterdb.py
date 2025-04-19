@@ -74,7 +74,7 @@ async def save_file(media):
     file_name = re.sub(r"(_|\-|\.|\+)", " ", str(media.file_name))
     try:
         if await Media.count_documents({'file_id': file_id}, limit=1):
-            logger.warning(f'{getattr(media, "file_name", "NO_FILE")} is already saved in primary DB !')
+            print(f'{getattr(media, "file_name", "NO_FILE")} is already saved in primary DB!')
             return False, 0
         file = saveMedia(
             file_id=file_id,
@@ -86,19 +86,16 @@ async def save_file(media):
             caption=media.caption.html if media.caption else None,
         )
     except ValidationError:
-        logger.exception('Error occurred while saving file in database')
+        print('Error occurred while saving file in database')
         return False, 2
     else:
         try:
             await file.commit()
         except DuplicateKeyError:  
-            logger.warning(
-                f'{getattr(media, "file_name", "NO_FILE")} is already saved in database'
-            )
-
+            print(f'{getattr(media, "file_name", "NO_FILE")} is already saved in Selected database')
             return False, 0
         else:
-            logger.info(f'{getattr(media, "file_name", "NO_FILE")} is saved to database')
+            print(f'{getattr(media, "file_name", "NO_FILE")} is saved to Selected database')
             return True, 1
 
 
