@@ -56,7 +56,7 @@ class Bot(Client):
         stats = await clientDB.command('dbStats')
         #calculating the free db space from bytes to MB
         free_dbSize = round(512-((stats['dataSize']/(1024*1024))+(stats['indexSize']/(1024*1024))), 2)
-        if SECONDDB_URI and free_dbSize<210: #if the primary db have less than 10MB left, use second DB.
+        if SECONDDB_URI and free_dbSize<320: #if the primary db have less than 350 MB left, use second DB.
             tempDict["indexDB"] = SECONDDB_URI
             logging.info(f"Since Primary DB have only {free_dbSize} MB left, Secondary DB will be used to store datas.")
         elif SECONDDB_URI is None:
@@ -73,7 +73,7 @@ class Bot(Client):
         logging.info(f"{me.first_name} with for Pyrogram v{__version__} (Layer {layer}) started on {me.username}.")
        # logging.info(LOG_STR)
         await self.send_message(chat_id=LOG_CHANNEL,text="Restart Successfully ✓\nKuttu Bot 2 💫\n2db 👀")
-        print("Og Eva Re-editeD ⚡")
+        print("Og Eva Re-editeD 2 db Using Feature⚡")
 
         client = webserver.AppRunner(await bot_run())
         await client.setup()
@@ -91,29 +91,6 @@ class Bot(Client):
         limit: int,
         offset: int = 0,
     ) -> Optional[AsyncGenerator["types.Message", None]]:
-        """Iterate through a chat sequentially.
-        This convenience method does the same as repeatedly calling :meth:`~pyrogram.Client.get_messages` in a loop, thus saving
-        you from the hassle of setting up boilerplate code. It is useful for getting the whole chat messages with a
-        single call.
-        Parameters:
-            chat_id (``int`` | ``str``):
-                Unique identifier (int) or username (str) of the target chat.
-                For your personal cloud (Saved Messages) you can simply use "me" or "self".
-                For a contact that exists in your Telegram address book you can use his phone number (str).
-                
-            limit (``int``):
-                Identifier of the last message to be returned.
-                
-            offset (``int``, *optional*):
-                Identifier of the first message to be returned.
-                Defaults to 0.
-        Returns:
-            ``Generator``: A generator yielding :obj:`~pyrogram.types.Message` objects.
-        Example:
-            .. code-block:: python
-                for message in app.iter_messages("pyrogram", 1, 15000):
-                    print(message.text)
-        """
         current = offset
         while True:
             new_diff = min(200, limit - current)
