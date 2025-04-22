@@ -16,6 +16,10 @@ BATCH_FILES = {}
 async def start(client, message: Message):
     user_id = message.from_user.id
     try:
+        await message.react(emoji=random.choice(REACTIONS), big=True) #reaction for start
+    except:
+        pass
+    try:
         # Check membership in FORCE_SUB_1
         member1 = await client.get_chat_member(FORCE_SUB_1, user_id)
         if member1.status == "kicked":
@@ -40,10 +44,6 @@ async def start(client, message: Message):
         await asyncio.sleep(20)
         await strdel.delete()
         return
-    try:
-        await message.react(emoji=random.choice(REACTIONS), big=True) #reaction for start
-    except:
-        pass
     if message.chat.type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
         buttons = [
             [InlineKeyboardButton('ℹ️ Help', url=f"https://t.me/{temp.U_NAME}?start=help")]
