@@ -28,15 +28,17 @@ async def start(client, message: Message):
             return
     except UserNotParticipant:
         # If user is not a member in one or both channels
-        await message.reply_text(
+        strdel=await message.reply_text(
             "🔊 𝗝𝗼𝗶𝗻 𝗢𝘂𝗿 𝗠𝗮𝗶𝗻 𝗖𝗵𝗮𝗻𝗻𝗲𝗹𝘀 🤭\n\n"
             "Tᴏ ᴀᴄᴄᴇss ᴛʜᴇ ʙᴏᴛ, ʏᴏᴜ ᴍᴜsᴛ ᴊᴏɪɴ ʙᴏᴛʜ ᴄʜᴀɴɴᴇʟs.",
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton("Update Channel 🎤", url=f"https://t.me/{FORCE_SUB_1}")],
-                [InlineKeyboardButton("BackUp Channel ♻", url=f"https://t.me/{FORCE_SUB_2}")],
+                [InlineKeyboardButton("BackUp Channel 🎤", url=f"https://t.me/{FORCE_SUB_1}")],
+                [InlineKeyboardButton("Update Channel ♻", url=f"https://t.me/{FORCE_SUB_2}")],
                 [InlineKeyboardButton("✅ Joined Both", callback_data="checksub")]
             ])
         )
+        await asyncio.sleep(20)
+        await strdel.delete()
         return
     try:
         await message.react(emoji=random.choice(REACTIONS), big=True) #reaction for start
