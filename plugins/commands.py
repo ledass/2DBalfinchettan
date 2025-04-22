@@ -11,6 +11,8 @@ from database.connections_mdb import active_connection
 logger = logging.getLogger(__name__)
 
 BATCH_FILES = {}
+REACTIONS = ["🤝", "😇", "🤗", "😍", "👍", "🎅", "😐", "🥰", "🤩", "😱", "🤣", "😘", "👏", "😛", "😈", "🎉", "⚡️", "🫡", "🤓", "😎", "🏆", "🔥", "🤭", "🌚", "🆒", "👻", "😁"] #don't add any emoji because tg not support all emoji reactions
+
 
 @Client.on_message(filters.command("start") & filters.incoming)
 async def start(client, message: Message):
