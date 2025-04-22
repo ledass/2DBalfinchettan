@@ -5,14 +5,13 @@ from pyrogram.errors import UserNotParticipant, ChatAdminRequired, PeerIdInvalid
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 from database.ia_filterdb import Media, Media2, get_file_details, unpack_new_file_id
 from database.users_chats_db import db
-from info import CHANNELS, REACTIONS, ADMINS, AUTH_CHANNEL, LOG_CHANNEL, PICS, BATCH_FILE_CAPTION, CUSTOM_FILE_CAPTION, PROTECT_CONTENT
+from info import CHANNELS, REACTIONS, ADMINS, AUTH_CHANNEL, LOG_CHANNEL, PICS, BATCH_FILE_CAPTION, CUSTOM_FILE_CAPTION, PROTECT_CONTENT,FORCE_SUB_1,FORCE_SUB_2
 from utils import get_settings, get_size, is_subscribed, save_group_settings, temp
 from database.connections_mdb import active_connection
 logger = logging.getLogger(__name__)
 
 BATCH_FILES = {}
-FORCE_SUB_1 = "wudixh12"
-FORCE_SUB_2 = "bckup112"
+
 
 @Client.on_message(filters.command("start") & filters.incoming)
 async def start(client, message: Message):
