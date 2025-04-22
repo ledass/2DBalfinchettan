@@ -73,7 +73,7 @@ async def start(client, message: Message):
             script.LOG_TEXT_P.format(message.from_user.id, message.from_user.mention)
         )
 
-    if len(message.command) != 2:
+    if not message.text or len(message.text.split()) != 2:
         buttons = [
             [InlineKeyboardButton('➕ Add Me To Your Groups ➕', url=f'http://t.me/{temp.U_NAME}?startgroup=true')],
             [
