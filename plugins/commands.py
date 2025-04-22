@@ -10,7 +10,7 @@ from utils import get_settings, get_size, is_subscribed, save_group_settings, te
 from database.connections_mdb import active_connection
 logger = logging.getLogger(__name__)
 
-FORCE_SUB_1 = "-1001589931058"  # Private group ID
+FORCE_SUB_1 = "-1001921007796"  # Private group ID
 FORCE_SUB_2 = "wudixh12"  # Optional second channel
 
 BATCH_FILES = {}
