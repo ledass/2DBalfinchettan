@@ -1,19 +1,13 @@
-import os
-import logging
-import random
-import asyncio
+import os, asyncio, logging, random,re,json,base64
 from Script import script
 from pyrogram import Client, filters, enums
 from pyrogram.errors import ChatAdminRequired, FloodWait, UserNotParticipant
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from database.ia_filterdb import Media, Media2, get_file_details, unpack_new_file_id
 from database.users_chats_db import db
-from info import CHANNELS, ADMINS, AUTH_CHANNEL, LOG_CHANNEL, PICS, BATCH_FILE_CAPTION, CUSTOM_FILE_CAPTION, PROTECT_CONTENT
+from info import CHANNELS, REACTIONS, ADMINS, AUTH_CHANNEL, LOG_CHANNEL, PICS, BATCH_FILE_CAPTION, CUSTOM_FILE_CAPTION, PROTECT_CONTENT
 from utils import get_settings, get_size, is_subscribed, save_group_settings, temp
 from database.connections_mdb import active_connection
-import re
-import json
-import base64
 logger = logging.getLogger(__name__)
 
 FORCE_SUB_1 = "-1001589931058"  # Private group ID
@@ -23,6 +17,10 @@ BATCH_FILES = {}
 
 @Client.on_message(filters.command("start") & filters.incoming)
 async def start(client, message):
+    try:
+        await message.react(emoji=random.choice(REACTIONS), big=True) #reaction for start
+    except:
+        pass
     not_joined = []
 
     for channel in filter(None, [FORCE_SUB_1, FORCE_SUB_2]):
