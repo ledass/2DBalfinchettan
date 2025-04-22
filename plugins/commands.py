@@ -17,7 +17,7 @@ import base64
 logger = logging.getLogger(__name__)
 
 FORCE_SUB_1 = "wudixh12"
-FORCE_SUB_2 = "t.me/+53lB8qzQaGFlNDll"
+FORCE_SUB_2 = "-1001589931058"
 
 BATCH_FILES = {}
 
