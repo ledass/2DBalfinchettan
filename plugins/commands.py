@@ -16,44 +16,41 @@ import json
 import base64
 logger = logging.getLogger(__name__)
 
-FORCE_SUB_1 = "wudixh12"
-FORCE_SUB_2 = "-1001589931058"
+FORCE_SUB_1 = "-1001589931058"  # Private group ID
+FORCE_SUB_2 = "wudixh12"  # Optional second channel
 
 BATCH_FILES = {}
 
 @Client.on_message(filters.command("start") & filters.incoming)
 async def start(client, message):
-    if FORCE_SUB_1 and FORCE_SUB_2:
-        not_joined = []  # This will store any channels the user hasn't joined
+    not_joined = []
 
-        for channel in [FORCE_SUB_1, FORCE_SUB_2]:
+    for channel in filter(None, [FORCE_SUB_1, FORCE_SUB_2]):
+        try:
+            user = await client.get_chat_member(channel, message.from_user.id)
+            if user.status == "kicked":
+                await message.reply_text("🚫 You are banned from one of our channels.")
+                return
+        except UserNotParticipant:
+            not_joined.append(channel)
+        except Exception as e:
+            print(f"⚠️ Error checking subscription for {channel}: {e}")
+            continue
+
+    if not_joined:
+        buttons = []
+        for i, channel_id in enumerate(not_joined):
             try:
-                user = await client.get_chat_member(channel, message.from_user.id)
-                if user.status == "kicked":
-                    await message.reply_text("🚫 You are banned from one of our channels.")
-                    return
-            except UserNotParticipant:
-                not_joined.append(channel)
+                invite_link = await client.export_chat_invite_link(channel_id)
+                buttons.append([InlineKeyboardButton(f"🔊 Join Channel {i+1}", url=invite_link)])
             except Exception as e:
-                print(f"Error checking subscription for {channel}: {e}")
-                continue
-
-        if not_joined:
-            # User hasn't joined one or both channels
-            buttons = [
-                [InlineKeyboardButton(f"🔊 Join Channel {i+1}", url=f"https://t.me/{channel}")]
-                for i, channel in enumerate(not_joined)
-            ]
-
-            await message.reply_text(
-                text=(
-                    "🔊 **Join All Required Channels!**\n\n"
-                    "To access this content, please join all our official channels first. 😊\n"
-                    "After joining, come back and try again. 🍿"
-                ),
-                reply_markup=InlineKeyboardMarkup(buttons)
-            )
-            return
+                print(f"⚠️ Failed to get invite link for {channel_id}: {e}")
+        
+        await message.reply_text(
+            text="🔊 **Join All Required Channels!**\n\nPlease join our official channels first. 😊\nThen come back and try again. 🍿",
+            reply_markup=InlineKeyboardMarkup(buttons)
+        )
+        return
 
     if message.chat.type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
         buttons = [
