@@ -1,8 +1,8 @@
 import os, asyncio, logging, random,re,json,base64
 from Script import script
 from pyrogram import Client, filters, enums
-from pyrogram.errors import ChatAdminRequired, FloodWait, UserNotParticipant
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from pyrogram.errors import UserNotParticipant, ChatAdminRequired, PeerIdInvalid, FloodWait
+from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 from database.ia_filterdb import Media, Media2, get_file_details, unpack_new_file_id
 from database.users_chats_db import db
 from info import CHANNELS, REACTIONS, ADMINS, AUTH_CHANNEL, LOG_CHANNEL, PICS, BATCH_FILE_CAPTION, CUSTOM_FILE_CAPTION, PROTECT_CONTENT
@@ -10,46 +10,40 @@ from utils import get_settings, get_size, is_subscribed, save_group_settings, te
 from database.connections_mdb import active_connection
 logger = logging.getLogger(__name__)
 
-FORCE_SUB_1 = "-1001921007796"  # Private group ID
-FORCE_SUB_2 = "wudixh12"  # Optional second channel
-
 BATCH_FILES = {}
+FORCE_SUB_1 = "wudixh12"
+FORCE_SUB_2 = "bckup112"
 
 @Client.on_message(filters.command("start") & filters.incoming)
-async def start(client, message):
+async def start(client, message: Message):
+    user_id = message.from_user.id
+    try:
+        # Check membership in FORCE_SUB_1
+        member1 = await client.get_chat_member(FORCE_SUB_1, user_id)
+        if member1.status == "kicked":
+            await message.reply_text("🚫 You are banned from accessing this bot (Channel 1).")
+            return
+        # Check membership in FORCE_SUB_2
+        member2 = await client.get_chat_member(FORCE_SUB_2, user_id)
+        if member2.status == "kicked":
+            await message.reply_text("🚫 You are banned from accessing this bot (Channel 2).")
+            return
+    except UserNotParticipant:
+        # If user is not a member in one or both channels
+        await message.reply_text(
+            "🔊 𝗝𝗼𝗶𝗻 𝗢𝘂𝗿 𝗠𝗮𝗶𝗻 𝗖𝗵𝗮𝗻𝗻𝗲𝗹𝘀 🤭\n\n"
+            "Tᴏ ᴀᴄᴄᴇss ᴛʜᴇ ʙᴏᴛ, ʏᴏᴜ ᴍᴜsᴛ ᴊᴏɪɴ ʙᴏᴛʜ ᴄʜᴀɴɴᴇʟs.",
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton("Update Channel 🎤", url=f"https://t.me/{FORCE_SUB_1}")],
+                [InlineKeyboardButton("BackUp Channel ♻", url=f"https://t.me/{FORCE_SUB_2}")],
+                [InlineKeyboardButton("✅ Joined Both", callback_data="checksub")]
+            ])
+        )
+        return
     try:
         await message.react(emoji=random.choice(REACTIONS), big=True) #reaction for start
     except:
         pass
-    not_joined = []
-
-    for channel in filter(None, [FORCE_SUB_1, FORCE_SUB_2]):
-        try:
-            user = await client.get_chat_member(channel, message.from_user.id)
-            if user.status == "kicked":
-                await message.reply_text("🚫 You are banned from one of our channels.")
-                return
-        except UserNotParticipant:
-            not_joined.append(channel)
-        except Exception as e:
-            print(f"⚠️ Error checking subscription for {channel}: {e}")
-            continue
-
-    if not_joined:
-        buttons = []
-        for i, channel_id in enumerate(not_joined):
-            try:
-                invite_link = await client.export_chat_invite_link(channel_id)
-                buttons.append([InlineKeyboardButton(f"🔊 Join Channel {i+1}", url=invite_link)])
-            except Exception as e:
-                print(f"⚠️ Failed to get invite link for {channel_id}: {e}")
-        
-        await message.reply_text(
-            text="🔊 **Join All Required Channels!**\n\nPlease join our official channels first. 😊\nThen come back and try again. 🍿",
-            reply_markup=InlineKeyboardMarkup(buttons)
-        )
-        return
-
     if message.chat.type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
         buttons = [
             [InlineKeyboardButton('ℹ️ Help', url=f"https://t.me/{temp.U_NAME}?start=help")]
@@ -106,10 +100,10 @@ async def start(client, message):
         btn = [
             [
                 InlineKeyboardButton(
-                    "🤖 Join Updates Channel", url=invite_link.invite_link
+                    "🤖 𝖩𝗈𝗂𝗇 𝖴𝗉𝖽𝖺𝗍𝖾𝗌 𝖢𝗁𝖺𝗇𝗇𝖾𝗅 🤖", url=invite_link.invite_link
                 )
             ]
-        ]
+        
 
         if message.command[1] != "subscribe":
             try:
@@ -118,12 +112,14 @@ async def start(client, message):
                 btn.append([InlineKeyboardButton(" 🔄 Try Again", callback_data=f"{pre}#{file_id}")])
             except (IndexError, ValueError):
                 btn.append([InlineKeyboardButton(" 🔄 Try Again", url=f"https://t.me/{temp.U_NAME}?start={message.command[1]}")])
-        await client.send_message(
+        fsub=await client.send_message(
             chat_id=message.from_user.id,
             text="**Please Join My Updates Channel to use this Bot!**",
             reply_markup=InlineKeyboardMarkup(btn),
             parse_mode=enums.ParseMode.MARKDOWN
             )
+        await asyncio.sleep(15)
+        await fsub.delete()
         return
     if len(message.command) == 2 and message.command[1] in ["subscribe", "error", "okay", "help"]:
         buttons = [[
@@ -547,3 +543,6 @@ async def settings(client, message):
             reply_to_message_id=message.id
         )
 
+@Client.on_callback_query(filters.regex("checksub"))
+async def recheck_subscription(client, callback_query):
+    await start(client, callback_query.message)
