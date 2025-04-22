@@ -16,10 +16,41 @@ import json
 import base64
 logger = logging.getLogger(__name__)
 
+FORCE_SUB_1 = "wudixh12"
+FORCE_SUB_2 = "t.me/+53lB8qzQaGFlNDll"
+
 BATCH_FILES = {}
 
 @Client.on_message(filters.command("start") & filters.incoming)
 async def start(client, message):
+    if FORCE_SUB_1 and FORCE_SUB_2:
+    not_joined = []  # This will store any channels the user hasn't joined
+
+    for channel in [FORCE_SUB_1, FORCE_SUB_2]:
+        try:
+            user = await bot.get_chat_member(channel, update.from_user.id)
+            if user.status == "kicked":
+                await update.reply_text("🚫 You are banned from one of our channels.")
+                return
+        except UserNotParticipant:
+            not_joined.append(channel)
+
+    if not_joined:
+        # User hasn't joined one or both channels
+        buttons = [
+            [InlineKeyboardButton(f"🔊 Join Channel {i+1}", url=f"https://t.me/{channel}")]
+            for i, channel in enumerate(not_joined)
+        ]
+
+        await update.reply_text(
+            text=(
+                "🔊 **Join All Required Channels!**\n\n"
+                "To access this content, please join all our official channels first. 😊\n"
+                "After joining, come back and try again. 🍿"
+            ),
+            reply_markup=InlineKeyboardMarkup(buttons)
+        )
+        return
     if message.chat.type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
         buttons = [
             [
