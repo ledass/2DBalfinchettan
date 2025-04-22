@@ -38,6 +38,8 @@ DATABASE_NAME = environ.get('DATABASE_NAME', "name")
 COLLECTION_NAME = environ.get('COLLECTION_NAME', 'file')
 
 # Others
+FORCE_SUB_1 = environ.get('FORCE_SUB_1', '')
+FORCE_SUB_2 = environ.get('FORCE_SUB_2', '')
 LOG_CHANNEL = int(environ.get('LOG_CHANNEL', 0))
 REACTIONS = ["🤝", "😇", "🤗", "😍", "👍", "🎅", "😐", "🥰", "🤩", "😱", "🤣", "😘", "👏", "😛", "😈", "🎉", "⚡️", "🫡", "🤓", "😎", "🏆", "🔥", "🤭", "🌚", "🆒", "👻", "😁"] #don't add any emoji because tg not support all emoji reactions
 SUPPORT_CHAT = environ.get('SUPPORT_CHAT', 'im_goutham_josh')
