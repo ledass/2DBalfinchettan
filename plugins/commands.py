@@ -4,7 +4,7 @@ import random
 import asyncio
 from Script import script
 from pyrogram import Client, filters, enums
-from pyrogram.errors import ChatAdminRequired, FloodWait
+from pyrogram.errors import ChatAdminRequired, FloodWait, UserNotParticipant
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from database.ia_filterdb import Media, Media2, get_file_details, unpack_new_file_id
 from database.users_chats_db import db
@@ -24,57 +24,76 @@ BATCH_FILES = {}
 @Client.on_message(filters.command("start") & filters.incoming)
 async def start(client, message):
     if FORCE_SUB_1 and FORCE_SUB_2:
-    not_joined = []  # This will store any channels the user hasn't joined
+        not_joined = []  # This will store any channels the user hasn't joined
 
-    for channel in [FORCE_SUB_1, FORCE_SUB_2]:
-        try:
-            user = await bot.get_chat_member(channel, update.from_user.id)
-            if user.status == "kicked":
-                await update.reply_text("🚫 You are banned from one of our channels.")
-                return
-        except UserNotParticipant:
-            not_joined.append(channel)
+        for channel in [FORCE_SUB_1, FORCE_SUB_2]:
+            try:
+                user = await client.get_chat_member(channel, message.from_user.id)
+                if user.status == "kicked":
+                    await message.reply_text("🚫 You are banned from one of our channels.")
+                    return
+            except UserNotParticipant:
+                not_joined.append(channel)
+            except Exception as e:
+                print(f"Error checking subscription for {channel}: {e}")
+                continue
 
-    if not_joined:
-        # User hasn't joined one or both channels
-        buttons = [
-            [InlineKeyboardButton(f"🔊 Join Channel {i+1}", url=f"https://t.me/{channel}")]
-            for i, channel in enumerate(not_joined)
-        ]
+        if not_joined:
+            # User hasn't joined one or both channels
+            buttons = [
+                [InlineKeyboardButton(f"🔊 Join Channel {i+1}", url=f"https://t.me/{channel}")]
+                for i, channel in enumerate(not_joined)
+            ]
 
-        await update.reply_text(
-            text=(
-                "🔊 **Join All Required Channels!**\n\n"
-                "To access this content, please join all our official channels first. 😊\n"
-                "After joining, come back and try again. 🍿"
-            ),
-            reply_markup=InlineKeyboardMarkup(buttons)
-        )
-        return
+            await message.reply_text(
+                text=(
+                    "🔊 **Join All Required Channels!**\n\n"
+                    "To access this content, please join all our official channels first. 😊\n"
+                    "After joining, come back and try again. 🍿"
+                ),
+                reply_markup=InlineKeyboardMarkup(buttons)
+            )
+            return
+
     if message.chat.type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
         buttons = [
-            [
-                InlineKeyboardButton('ℹ️ Help', url=f"https://t.me/{temp.U_NAME}?start=help")
-            ]
-            ]
+            [InlineKeyboardButton('ℹ️ Help', url=f"https://t.me/{temp.U_NAME}?start=help")]
+        ]
         reply_markup = InlineKeyboardMarkup(buttons)
-        await message.reply(script.START_TXT.format(message.from_user.mention if message.from_user else message.chat.title, temp.U_NAME, temp.B_NAME), reply_markup=reply_markup)
-        await asyncio.sleep(2) # 😢 https://github.com/EvamariaTG/EvaMaria/blob/master/plugins/p_ttishow.py#L17 😬 wait a bit, before checking.
+        await message.reply(
+            script.START_TXT.format(
+                message.from_user.mention if message.from_user else message.chat.title,
+                temp.U_NAME,
+                temp.B_NAME
+            ),
+            reply_markup=reply_markup
+        )
+        await asyncio.sleep(2)
+
         if not await db.get_chat(message.chat.id):
-            total=await client.get_chat_members_count(message.chat.id)
-            await client.send_message(LOG_CHANNEL, script.LOG_TEXT_G.format(message.chat.title, message.chat.id, total, "Unknown"))       
+            total = await client.get_chat_members_count(message.chat.id)
+            await client.send_message(
+                LOG_CHANNEL,
+                script.LOG_TEXT_G.format(message.chat.title, message.chat.id, total, "Unknown")
+            )
             await db.add_chat(message.chat.id, message.chat.title)
-        return 
+        return
+
     if not await db.is_user_exist(message.from_user.id):
         await db.add_user(message.from_user.id, message.from_user.first_name)
-        await client.send_message(LOG_CHANNEL, script.LOG_TEXT_P.format(message.from_user.id, message.from_user.mention))
+        await client.send_message(
+            LOG_CHANNEL,
+            script.LOG_TEXT_P.format(message.from_user.id, message.from_user.mention)
+        )
+
     if len(message.command) != 2:
-        buttons = [[
-            InlineKeyboardButton('➕ Add Me To Your Groups ➕', url=f'http://t.me/{temp.U_NAME}?startgroup=true')
-            ],[
-            InlineKeyboardButton('ℹ️ Help', callback_data='help'),
-            InlineKeyboardButton('😊 About', callback_data='about')
-        ]]
+        buttons = [
+            [InlineKeyboardButton('➕ Add Me To Your Groups ➕', url=f'http://t.me/{temp.U_NAME}?startgroup=true')],
+            [
+                InlineKeyboardButton('ℹ️ Help', callback_data='help'),
+                InlineKeyboardButton('😊 About', callback_data='about')
+            ]
+        ]
         reply_markup = InlineKeyboardMarkup(buttons)
         await message.reply_photo(
             photo=random.choice(PICS),
