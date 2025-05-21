@@ -38,7 +38,7 @@ async def give_filter(client, message):
 async def next_page(bot, query):
     ident, req, key, offset = query.data.split("_")
     if int(req) not in [query.from_user.id, 0]:
-        return await query.answer("oKda", show_alert=True)
+        return await query.answer("Please Use Your Button", show_alert=True)
     try:
         offset = int(offset)
     except:
@@ -61,7 +61,7 @@ async def next_page(bot, query):
         btn = [
             [
                 InlineKeyboardButton(
-                    text=f"[{get_size(file.file_size)}]-🌟-{file.file_name}", callback_data=f'files#{file.file_id}'
+                    text=f"[{get_size(file.file_size)}]-🎬-{file.file_name}", callback_data=f'files#{file.file_id}'
                 ),
             ]
             for file in files
@@ -81,9 +81,9 @@ async def next_page(bot, query):
         ]
     btn.insert(0, 
             [
-                InlineKeyboardButton(f'iɴꜰᴏ', 'reqinfo'),
-                InlineKeyboardButton(f'Mᴏᴠɪᴇ', 'minfo'),
-                InlineKeyboardButton(f'Sᴇʀɪᴇꜱ', 'sinfo')
+                InlineKeyboardButton(f'ℹ iɴꜰᴏ', 'reqinfo'),
+                InlineKeyboardButton(f'📽 Mᴏᴠɪᴇ', 'minfo'),
+                InlineKeyboardButton(f'💀 Sᴇʀɪᴇꜱ', 'sinfo')
             ]
         )
 
@@ -120,28 +120,35 @@ async def next_page(bot, query):
     await query.answer()
 
 
-@Client.on_callback_query(filters.regex(r"^spol")) ###SOMECHANGES DONE BY GOUTHAMSER
+@Client.on_callback_query(filters.regex(r"^spol"))
 async def advantage_spoll_choker(bot, query):
     _, user, movie_ = query.data.split('#')
-    if int(user) != 0 and query.from_user.id != int(user):
-        return await query.answer("Thiz is Not For You 🚫", show_alert=True)
-    if movie_ == "close_spellcheck":
-        return await query.message.delete()
     movies = SPELL_CHECK.get(query.message.reply_to_message.id)
     if not movies:
-        return await query.answer("Using Old Message", show_alert=True)#script change
+        return await query.answer(script.OLD_ALRT_TXT.format(query.from_user.first_name), show_alert=True)
+    if int(user) != 0 and query.from_user.id != int(user):
+        return await query.answer(script.ALRT_TXT.format(query.from_user.first_name), show_alert=True)
+    if movie_ == "close_spellcheck":
+        return await query.message.delete()
     movie = movies[(int(movie_))]
-    await query.answer("Checking in DB....")#script change
-    k = await manual_filters(bot, query.message, text=movie)
-    if k == False:
-        files, offset, total_results = await get_search_results(movie, offset=0, filter=True)
-        if files:
-            k = (movie, files, offset, total_results)
-            await auto_filter(bot, query, k)
-        else:
-            k = await query.message.edit("NOT FOUNT IN DB")#script change
-            await asyncio.sleep(15)
-            await k.delete()
+    await query.answer(script.TOP_ALRT_MSG)
+   # gl = await global_filters(bot, query.message, text=movie) global filter not avilble i removed the feature
+    manual = await manual_filters(bot, query.message, text=movie)
+    files, offset, total_results = await get_search_results(query.message.chat.id, movie, offset=0, filter=True)
+    if files:
+        k = (movie, files, offset, total_results)
+        await auto_filter(bot, query, k)
+    else:
+        if NO_RESULTS_MSG:
+            reqstr1 = query.from_user.id if query.from_user else 0
+            reqstr = await bot.get_users(reqstr1)
+            await bot.send_message(chat_id=LOG_CHANNEL, text=(script.NORSLTS.format(reqstr.id, reqstr.mention, movie)))
+        k_msg = await query.message.edit(script.MVE_NT_FND)
+        await asyncio.sleep(10)
+        await k_msg.delete()
+        await asyncio.sleep(50)
+    if manual:
+        await manual.delete()
 
 @Client.on_callback_query()
 async def cb_handler(client: Client, query: CallbackQuery):
@@ -655,7 +662,7 @@ async def auto_filter(client, msg, spoll=False):
         btn = [
             [
                 InlineKeyboardButton(
-                    text=f"[{get_size(file.file_size)}]-🌟-{file.file_name}", callback_data=f'{pre}#{file.file_id}'
+                    text=f"[{get_size(file.file_size)}]-🎬-{file.file_name}", callback_data=f'{pre}#{file.file_id}'
                 ),
             ]
             for file in files
@@ -676,9 +683,9 @@ async def auto_filter(client, msg, spoll=False):
         ] 
     btn.insert(0, 
             [
-                InlineKeyboardButton(f'ɪɴꜰᴏ', 'reqinfo'),
-                InlineKeyboardButton(f'ᴍᴏᴠɪᴇ', 'minfo'),
-                InlineKeyboardButton(f'ꜱᴇʀɪᴇꜱ', 'sinfo')
+                InlineKeyboardButton(f'ℹ iɴꜰᴏ', 'reqinfo'),
+                InlineKeyboardButton(f'📽 Mᴏᴠɪᴇ', 'minfo'),
+                InlineKeyboardButton(f'💀 Sᴇʀɪᴇꜱ', 'sinfo')
             ]
         )
 
@@ -776,32 +783,34 @@ async def advantage_spell_chok(client, msg):
         logger.exception(e)
         reqst_gle = mv_rqst.replace(" ", "+")
         button = [[
-                 InlineKeyboardButton('Gᴏᴏɢʟᴇ ', url=f"https://www.google.com/search?q={reqst_gle}")
+                   InlineKeyboardButton("Gᴏᴏɢʟᴇ", url=f"https://www.google.com/search?q={reqst_gle}")
         ]]
-        
+        if NO_RESULTS_MSG:
+            await client.send_message(chat_id=LOG_CHANNEL, text=(script.NORSLTS.format(reqstr.id, reqstr.mention, mv_rqst)))
         k = await msg.reply_text(
-            text="NOT FOUNT IN DB", #IN SCRIPT CHANGE DONOT CHANGE CODE
-            reply_markup=InlineKeyboardMarkup(button),
-            reply_to_message_id=msg.id
+            text=script.I_CUDNT.format(mv_rqst),
+            reply_markup=InlineKeyboardMarkup(button)
         )
-        await asyncio.sleep(15)
-        await k.delete()      
+        await asyncio.sleep(30)
+        await k.delete()
         return
     movielist = []
     if not movies:
         reqst_gle = mv_rqst.replace(" ", "+")
         button = [[
-                 InlineKeyboardButton('Gᴏᴏɢʟᴇ ', url=f"https://www.google.com/search?q={reqst_gle}")
-        ]]   
-        k = await msg.reply_text(
-            text="NOT FOUNT IN DB",  #DONOTCHANGE IN THIS CODE PLS CHANGE IN SCRIPT
-            reply_markup=InlineKeyboardMarkup(button),
-            reply_to_message_id=msg.id
+                   InlineKeyboardButton("Gᴏᴏɢʟᴇ", url=f"https://www.google.com/search?q={reqst_gle}")
+        ]]
+        if NO_RESULTS_MSG:
+            await client.send_message(chat_id=LOG_CHANNEL, text=(script.NORSLTS.format(reqstr.id, reqstr.mention, mv_rqst)))
+        k = await msg.reply_text( 
+            text=script.I_CUDNT.format(mv_rqst),
+            reply_markup=InlineKeyboardMarkup(button)
         )
-        await asyncio.sleep(15)
+        await asyncio.sleep(30)
         await k.delete()
         return
-    movielist = [movie.get('title') for movie in movies]
+    movielist += [movie.get('title') for movie in movies]
+    movielist += [f"{movie.get('title')} {movie.get('year')}" for movie in movies]
     SPELL_CHECK[mv_id] = movielist
     btn = [
         [
@@ -812,13 +821,12 @@ async def advantage_spell_chok(client, msg):
         ]
         for k, movie_name in enumerate(movielist)
     ]
-    btn.append([InlineKeyboardButton(text="✘ ᴄʟᴏsᴇ ✘", callback_data=f'spol#{reqstr1}#close_spellcheck')])
+    btn.append([InlineKeyboardButton(text="Close", callback_data=f'spol#{reqstr1}#close_spellcheck')])
     spell_check_del = await msg.reply_text(
-        text="<b>Sᴘᴇʟʟɪɴɢ Mɪꜱᴛᴀᴋᴇ Bʀᴏ ‼️\n\nᴅᴏɴ'ᴛ ᴡᴏʀʀʏ 😊 Cʜᴏᴏꜱᴇ ᴛʜᴇ ᴄᴏʀʀᴇᴄᴛ ᴏɴᴇ ʙᴇʟᴏᴡ 👇</b>",
-        reply_markup=InlineKeyboardMarkup(btn),
-        reply_to_message_id=msg.id
+        text=(script.CUDNT_FND.format(mv_rqst)),
+        reply_markup=InlineKeyboardMarkup(btn)
     )
-    await asyncio.sleep(15)
+    await asyncio.sleep(600)
     await spell_check_del.delete()
 
 #SPELL CHECK END
