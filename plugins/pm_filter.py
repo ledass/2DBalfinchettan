@@ -79,6 +79,13 @@ async def next_page(bot, query):
             ]
             for file in files
         ]
+    btn.insert(0, 
+            [
+                InlineKeyboardButton(f'iɴꜰᴏ', 'reqinfo'),
+                InlineKeyboardButton(f'Mᴏᴠɪᴇ', 'minfo'),
+                InlineKeyboardButton(f'Sᴇʀɪᴇꜱ', 'sinfo')
+            ]
+        )
 
     if 0 < offset <= 10:
         off_set = 0
@@ -396,6 +403,12 @@ async def cb_handler(client: Client, query: CallbackQuery):
             caption=f_caption,
             protect_content=True if ident == 'checksubp' else False
         )
+    elif query.data == "reqinfo":
+        await query.answer(text=script.REQINFO, show_alert=True)
+    elif query.data == "minfo":
+        await query.answer(text=script.MINFO, show_alert=True)
+    elif query.data == "sinfo":
+        await query.answer(text=script.SINFO, show_alert=True)   
     elif query.data == "pages":
         await query.answer()
     elif query.data == "start":
@@ -615,6 +628,11 @@ async def auto_filter(client, msg, spoll=False):
     if not spoll:
         message = msg
         settings = await get_settings(message.chat.id)
+        # Delete message if it contains spammy links or usernames
+        if re.search(r'(?im)(?:https?://|www\.|t\.me/|telegram\.dog/)\S+|@[a-z0-9_]{5,32}\b', message.text):
+            await asyncio.sleep(3)  # Wait for 3 seconds
+            await message.delete() #3 seconds dlt msg
+            return
         if message.text.startswith("/"): return  # ignore commands
         if re.findall("((^\/|^,|^!|^\.|^[\U0001F600-\U000E007F]).*)", message.text):
             return
@@ -655,7 +673,14 @@ async def auto_filter(client, msg, spoll=False):
                 ),
             ]
             for file in files
-        ]
+        ] 
+    btn.insert(0, 
+            [
+                InlineKeyboardButton(f'ɪɴꜰᴏ', 'reqinfo'),
+                InlineKeyboardButton(f'ᴍᴏᴠɪᴇ', 'minfo'),
+                InlineKeyboardButton(f'ꜱᴇʀɪᴇꜱ', 'sinfo')
+            ]
+        )
 
     if offset != "":
         key = f"{message.chat.id}-{message.id}"
@@ -709,25 +734,25 @@ async def auto_filter(client, msg, spoll=False):
         try:
             a1=await message.reply_photo(photo=imdb.get('poster'), caption=cap[:1024],
                                       reply_markup=InlineKeyboardMarkup(btn))
-            await asyncio.sleep(120)
+            await asyncio.sleep(200)
             await a1.delete()
             await message.delete()
         except (MediaEmpty, PhotoInvalidDimensions, WebpageMediaEmpty):
             pic = imdb.get('poster')
             poster = pic.replace('.jpg', "._V1_UX360.jpg")
             a2=await message.reply_photo(photo=poster, caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btn))
-            await asyncio.sleep(120)
+            await asyncio.sleep(200)
             await a2.delete()
             await message.delete()
         except Exception as e:
             logger.exception(e)
             a3=await message.reply_text(cap, reply_markup=InlineKeyboardMarkup(btn))
-            await asyncio.sleep(120)
+            await asyncio.sleep(200)
             await a3.delete()
             await message.delete()
     else:
         a4=await message.reply_text(cap, reply_markup=InlineKeyboardMarkup(btn))
-        await asyncio.sleep(120)
+        await asyncio.sleep(200)
         await a4.delete()
         await message.delete()
     if spoll:
