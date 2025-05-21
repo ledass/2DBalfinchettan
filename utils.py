@@ -60,9 +60,9 @@ async def is_subscribed(bot, query=None, userid=None):
                 continue
 
     return invite_links
+
 async def get_poster(query, bulk=False, id=False, file=None):
     if not id:
-        # https://t.me/GetTGLink/4183
         query = (query.strip()).lower()
         title = query
         year = re.findall(r'[1-2]\d{3}$', query, re.IGNORECASE)
@@ -93,6 +93,8 @@ async def get_poster(query, bulk=False, id=False, file=None):
     else:
         movieid = query
     movie = imdb.get_movie(movieid)
+    if not movie:
+        return None
     if movie.get("original air date"):
         date = movie["original air date"]
     elif movie.get("year"):
@@ -138,7 +140,6 @@ async def get_poster(query, bulk=False, id=False, file=None):
         'rating': str(movie.get("rating")),
         'url':f'https://www.imdb.com/title/tt{movieid}'
     }
-# https://github.com/odysseusmax/animated-lamp/blob/2ef4730eb2b5f0596ed6d03e7b05243d93e3415b/bot/utils/broadcast.py#L37
 
 async def broadcast_messages(user_id, message):
     try:
