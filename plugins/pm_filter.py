@@ -123,6 +123,9 @@ async def next_page(bot, query):
 @Client.on_callback_query(filters.regex(r"^spol"))
 async def advantage_spoll_choker(bot, query):
     _, user, movie_ = query.data.split('#')
+    # Fix: Check if reply_to_message exists before accessing its ID
+    if not query.message.reply_to_message:
+        return await query.answer("Original message not found.", show_alert=True)
     movies = SPELL_CHECK.get(query.message.reply_to_message.id)
     if not movies:
         return await query.answer(script.OLD_ALRT_TXT.format(query.from_user.first_name), show_alert=True)
@@ -132,6 +135,7 @@ async def advantage_spoll_choker(bot, query):
         return await query.message.delete()
     movie = movies[(int(movie_))]
     await query.answer(script.TOP_ALRT_MSG)
+
     manual = await manual_filters(bot, query.message, text=movie)
     files, offset, total_results = await get_search_results(query.message.chat.id, movie, offset=0, filter=True)
     if files:
@@ -145,7 +149,7 @@ async def advantage_spoll_choker(bot, query):
         k_msg = await query.message.edit(script.MVE_NT_FND)
         await asyncio.sleep(10)
         await k_msg.delete()
-        await asyncio.sleep(590)
+        await asyncio.sleep(50)
     if manual:
         await manual.delete()
 
