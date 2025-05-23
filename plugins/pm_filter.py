@@ -640,16 +640,17 @@ async def auto_filter(client, msg, spoll=False):
         settings = await get_settings(message.chat.id)
         # Delete message if it contains spammy links or usernames
         if re.search(r'(?im)(?:https?://|www\.|t\.me/|telegram\.dog/)\S+|@[a-z0-9_]{5,32}\b', message.text):
-            await asyncio.sleep(3)  # Wait for 3 seconds
+            await asyncio.sleep(3)
             await message.delete()
             return
-        if message.text.startswith("/"): return  # ignore commands
-        if re.findall("((^\/|^,|^!|^\.|^[\U0001F600-\U000E007F]).*)", message.text):
+        if message.text.startswith("/"):
+            return
+        if re.findall(r"((^\/|^,|^!|^\.|^[\U0001F600-\U000E007F]).*)", message.text):
             return
         if 2 < len(message.text) < 100:
             search = message.text
             files, offset, total_results = await get_search_results(message.chat.id, search.lower(), offset=0, filter=True)
-           if not files:
+            if not files:
                 keyboard = InlineKeyboardMarkup(
                     [[
                         InlineKeyboardButton(
@@ -694,16 +695,14 @@ async def auto_filter(client, msg, spoll=False):
                 ),
             ]
             for file in files
-        ] 
-
-    btn.insert(0, 
+        ]
+    btn.insert(0,
         [
             InlineKeyboardButton(f'ℹ iɴꜰᴏ', 'reqinfo'),
             InlineKeyboardButton(f'📽 Mᴏᴠɪᴇ', 'minfo'),
             InlineKeyboardButton(f'💀 Sᴇʀɪᴇꜱ', 'sinfo')
         ]
     )
-
     if offset != "":
         key = f"{message.chat.id}-{message.id}"
         BUTTONS[key] = search
@@ -716,7 +715,6 @@ async def auto_filter(client, msg, spoll=False):
         btn.append(
             [InlineKeyboardButton(text="🗓 1/1", callback_data="pages")]
         )
-
     imdb = await get_poster(search, file=(files[0]).file_name) if settings["imdb"] else None
     TEMPLATE = settings['template']
     if imdb:
@@ -782,7 +780,6 @@ async def auto_filter(client, msg, spoll=False):
 
     if spoll:
         await msg.message.delete()
-
 #SPELL CHECK RE EDITED BY GOUTHAMSER
 #async def advantage_spell_chok(client, msg):
 #    mv_id = msg.id
