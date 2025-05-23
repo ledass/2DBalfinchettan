@@ -420,7 +420,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
     elif query.data == "sinfo":
         await query.answer(text=script.SINFO, show_alert=True)   
     elif query.data == "pages":
-        await query.answer()
+        await query.answer("𝑊ℎ𝑦 𝐴𝑟𝑒 𝑌𝑜𝑢 𝐶𝑙𝑖𝑐𝑘𝑒𝑑 𝐻𝑒𝑟𝑒 !!!")
     elif query.data == "start":
         buttons = [[
             InlineKeyboardButton('➕ Add Me To Your Groups ➕', url=f'http://t.me/{temp.U_NAME}?startgroup=true')
@@ -659,11 +659,13 @@ async def auto_filter(client, msg, spoll=False):
                         )
                     ]]
                 )
-                await message.reply_text(
+                spnt=await message.reply_text(
                     f"🎬 Sorry, I couldn't find any movie matching your query **{search}**.\n\n"
                     "🔍 Please check the spelling or try a different title.",
                     reply_markup=keyboard
                 )
+                await asyncio.sleep(35)
+                await spnt.delete()
                 return
         else:
             return
@@ -756,25 +758,25 @@ async def auto_filter(client, msg, spoll=False):
         try:
             a1 = await message.reply_photo(photo=imdb.get('poster'), caption=cap[:1024],
                                            reply_markup=InlineKeyboardMarkup(btn))
-            await asyncio.sleep(200)
+            await asyncio.sleep(600)
             await a1.delete()
             await message.delete()
         except (MediaEmpty, PhotoInvalidDimensions, WebpageMediaEmpty):
             pic = imdb.get('poster')
             poster = pic.replace('.jpg', "._V1_UX360.jpg")
             a2 = await message.reply_photo(photo=poster, caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btn))
-            await asyncio.sleep(200)
+            await asyncio.sleep(600)
             await a2.delete()
             await message.delete()
         except Exception as e:
             logger.exception(e)
             a3 = await message.reply_text(cap, reply_markup=InlineKeyboardMarkup(btn))
-            await asyncio.sleep(200)
+            await asyncio.sleep(600)
             await a3.delete()
             await message.delete()
     else:
         a4 = await message.reply_text(cap, reply_markup=InlineKeyboardMarkup(btn))
-        await asyncio.sleep(200)
+        await asyncio.sleep(600)
         await a4.delete()
         await message.delete()
 
