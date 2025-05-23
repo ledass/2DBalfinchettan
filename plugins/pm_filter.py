@@ -649,8 +649,20 @@ async def auto_filter(client, msg, spoll=False):
         if 2 < len(message.text) < 100:
             search = message.text
             files, offset, total_results = await get_search_results(message.chat.id, search.lower(), offset=0, filter=True)
-            if not files:
-                await message.reply_text(f"🎬 Sorry, I couldn't find any movie matching your query {search}.\n""🔍 Please check the spelling or try a different title.")
+           if not files:
+                keyboard = InlineKeyboardMarkup(
+                    [[
+                        InlineKeyboardButton(
+                            text="🔍 Search on Google",
+                            url=f"https://www.google.com/search?q={search.replace(' ', '+')}"
+                        )
+                    ]]
+                )
+                await message.reply_text(
+                    f"🎬 Sorry, I couldn't find any movie matching your query **{search}**.\n\n"
+                    "🔍 Please check the spelling or try a different title.",
+                    reply_markup=keyboard
+                )
                 return
         else:
             return
