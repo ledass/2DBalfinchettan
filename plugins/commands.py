@@ -5,7 +5,7 @@ from pyrogram.errors import UserNotParticipant, ChatAdminRequired, PeerIdInvalid
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 from database.ia_filterdb import Media, Media2, get_file_details, unpack_new_file_id
 from database.users_chats_db import db
-from info import CHANNELS, REACTIONS, ADMINS, AUTH_CHANNEL, LOG_CHANNEL, PICS, BATCH_FILE_CAPTION, CUSTOM_FILE_CAPTION, PROTECT_CONTENT, FORCE_SUB_1, FORCE_SUB_2
+from info import CHANNELS, REACTIONS, ADMINS, AUTH_CHANNEL, LOG_CHANNEL, PICS, BATCH_FILE_CAPTION, CUSTOM_FILE_CAPTION, PROTECT_CONTENT
 from utils import get_settings, get_size, is_subscribed, save_group_settings, temp
 from database.connections_mdb import active_connection
 logger = logging.getLogger(__name__)
@@ -21,31 +21,6 @@ async def start(client, message: Message):
         await message.react(emoji=random.choice(REACTIONS), big=True) #reaction for start
     except:
         pass
-    try:
-        # Check membership in FORCE_SUB_1
-        member1 = await client.get_chat_member(FORCE_SUB_1, user_id)
-        if member1.status == "kicked":
-            await message.reply_text("🚫 You are banned from accessing this bot (Channel 1).")
-            return
-        # Check membership in FORCE_SUB_2
-        member2 = await client.get_chat_member(FORCE_SUB_2, user_id)
-        if member2.status == "kicked":
-            await message.reply_text("🚫 You are banned from accessing this bot (Channel 2).")
-            return
-    except UserNotParticipant:
-        # If user is not a member in one or both channels
-        strdel = await message.reply_text(
-            "🔊 𝗝𝗼𝗶𝗻 𝗢𝘂𝗿 𝗠𝗮𝗶𝗻 𝗖𝗵𝗮𝗻𝗻𝗲𝗹𝘀 🤭\n\n"
-            "Tᴏ ᴀᴄᴄᴇss ᴛʜᴇ ʙᴏᴛ, ʏᴏᴜ ᴍᴜsᴛ ᴊᴏɪɴ ʙᴏᴛʜ ᴄʜᴀɴ𝗻ᴇ𝗹s.",
-            reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton("BackUp Channel 🎤", url=f"https://t.me/{FORCE_SUB_1}")],
-                [InlineKeyboardButton("Update Channel ♻", url=f"https://t.me/{FORCE_SUB_2}")],
-                [InlineKeyboardButton("✅ Joined Both", callback_data="checkfsub")]
-            ])
-        )
-        await asyncio.sleep(20)
-        await strdel.delete()
-        return
     if message.chat.type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
         buttons = [
             [InlineKeyboardButton('ℹ️ Help', url=f"https://t.me/{temp.U_NAME}?start=help")]
@@ -181,7 +156,7 @@ async def start(client, message: Message):
                 k = await client.send_message(chat_id = message.from_user.id, text=f"<blockquote><b><u>❗️❗️❗️IMPORTANT❗️️❗️❗️</u></b>\n\nᴛʜɪs ᴍᴇssᴀɢᴇ ᴡɪʟʟ ʙᴇ ᴅᴇʟᴇᴛᴇᴅ ɪɴ <b><u>10 mins</u> 🫥 <i></b>(ᴅᴜᴇ ᴛᴏ ᴄᴏᴘʏʀɪɢʜᴛ ɪssᴜᴇs)</i>.\n\n<b><i>ᴘʟᴇᴀsᴇ ғᴏʀᴡᴀʀᴅ ᴛʜɪs ᴍᴇssᴀɢᴇ ᴛᴏ ʏᴏᴜʀ sᴀᴠᴇᴅ ᴍᴇssᴀɢᴇs ᴏʀ ᴀɴʏ ᴘʀɪᴠᴀᴛᴇ ᴄʜᴀᴛ.</i></b></blockquote>")
                 await asyncio.sleep(600)
                 await m.delete()
-                await k.edit_text("<b>✅ ʏᴏᴜʀ ᴍᴇssᴀɢᴇ ɪs sᴜᴄᴄᴇssғᴜʟʟʏ ᴅᴇʟᴇᴛᴇᴅ</b>") 
+                await k.edit_text("<b>✅ Yᴏᴜʀ Mᴇssᴀɢᴇ ɪs sᴜᴄᴄᴇssғᴜʟʟʏ ᴅᴇʟᴇᴛᴇᴅ</b>") 
                 return
             except FloodWait as e:
                 await asyncio.sleep(e.x)
@@ -256,7 +231,7 @@ async def start(client, message: Message):
             k = await client.send_message(chat_id = message.from_user.id, text=f"<blockquote><b><u>❗️❗️❗️IMPORTANT❗️️❗️❗️</u></b>\n\nᴛʜɪs ᴍᴇssᴀɢᴇ ᴡɪʟʟ ʙᴇ ᴅᴇʟᴇᴛᴇᴅ ɪɴ <b><u>10 mins</u> 🫥 <i></b>(ᴅᴜᴇ ᴛᴏ ᴄᴏᴘʏʀɪɢʜᴛ ɪssᴜᴇs)</i>.\n\n<b><i>ᴘʟᴇᴀsᴇ ғᴏʀᴡᴀʀᴅ ᴛʜɪs ᴍᴇssᴀɢᴇ ᴛᴏ ʏᴏᴜʀ sᴀᴠᴇᴅ ᴍᴇssᴀɢᴇs ᴏʀ ᴀɴʏ ᴘʀɪᴠᴀᴛᴇ ᴄʜᴀᴛ.</i></b></blockquote>")
             await asyncio.sleep(600)
             await msg.delete()
-            await k.edit_text("<b>✅ ʏᴏᴜʀ ᴍᴇssᴀɢᴇ ɪs sᴜᴄᴄᴇssғᴜʟʟʏ ᴅᴇʟᴇᴛᴇᴅ</b>")
+            await k.edit_text("<b>✅ Yᴏᴜʀ Mᴇssᴀɢᴇ ɪs sᴜᴄᴄᴇssғᴜʟʟʏ ᴅᴇʟᴇᴛᴇᴅ</b>")
             return
             filetype = msg.media
             file = getattr(msg, filetype.value)
@@ -294,7 +269,7 @@ async def start(client, message: Message):
     k = await client.send_message(chat_id = message.from_user.id, text=f"<blockquote><b><u>❗️❗️❗️IMPORTANT❗️️❗️❗️</u></b>\n\nᴛʜɪs ᴍᴇssᴀɢᴇ ᴡɪʟʟ ʙᴇ ᴅᴇʟᴇᴛᴇᴅ ɪɴ <b><u>10 mins</u> 🫥 <i></b>(ᴅᴜᴇ ᴛᴏ ᴄᴏᴘʏʀɪɢʜᴛ ɪssᴜᴇs)</i>.\n\n<b><i>ᴘʟᴇᴀsᴇ ғᴏʀᴡᴀʀᴅ ᴛʜɪs ᴍᴇssᴀɢᴇ ᴛᴏ ʏᴏᴜʀ sᴀᴠᴇᴅ ᴍᴇssᴀɢᴇs ᴏʀ ᴀɴʏ ᴘʀɪᴠᴀᴛᴇ ᴄʜᴀᴛ.</i></b></blockquote>")
     await asyncio.sleep(600)
     await m.delete()
-    await k.edit_text("<b>✅ ʏᴏᴜʀ ᴍᴇssᴀɢᴇ ɪs sᴜᴄᴄᴇssғᴜʟʟʏ ᴅᴇʟᴇᴛᴇᴅ</b>")
+    await k.edit_text("<b>✅ Yᴏᴜʀ Mᴇssᴀɢᴇ ɪs sᴜᴄᴄᴇssғᴜʟʟʏ ᴅᴇʟᴇᴛᴇᴅ</b>")
     return      
                     
 
