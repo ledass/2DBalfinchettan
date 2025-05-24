@@ -1,4 +1,4 @@
-import os, asyncio, logging, random,re,json,base64,sys
+import os, asyncio, logging, random, re, json, base64, sys, time, psutil
 from Script import script
 from pyrogram import Client, filters, enums
 from pyrogram.errors import UserNotParticipant, ChatAdminRequired, PeerIdInvalid, FloodWait
@@ -529,3 +529,47 @@ async def stop_button(bot, message):
     await asyncio.sleep(2.5)
     await msg.edit("**𝖡𝗈𝗍 𝖱𝖾𝗌𝗍𝖺𝗋𝗍𝖾𝖽 𝖲𝗎𝖼𝖼𝖾𝗌𝗌𝖿𝗎𝗅𝗅𝗒 ! 𝖱𝖾𝖺𝖽𝗒 𝖳𝗈 𝖬𝗈𝗏𝖾 𝖮𝗇 💯**")
     os.execl(sys.executable, sys.executable, *sys.argv)
+
+BOT_START_TIME = time.time()
+
+def format_uptime_short(seconds: int) -> str:
+    days, rem = divmod(seconds, 86400)
+    hours, rem = divmod(rem, 3600)
+    minutes, sec = divmod(rem, 60)
+
+    parts = []
+    if days > 0:
+        parts.append(f"{days}d")
+    if hours > 0:
+        parts.append(f"{hours}hr")
+    if minutes > 0:
+        parts.append(f"{minutes}m")
+    if sec > 0 or not parts:
+        parts.append(f"{sec}s")
+
+    return " ".join(parts)
+
+@Client.on_message(filters.command("usage"))
+async def usage(client, message):
+    uptime_seconds = int(time.time() - BOT_START_TIME)
+    uptime_str = format_uptime_short(uptime_seconds)
+
+    cpu_percent = psutil.cpu_percent(interval=1)
+    mem = psutil.virtual_memory()
+    mem_used = round(mem.used / (1024 ** 2), 2)
+    mem_total = round(mem.total / (1024 ** 2), 2)
+    mem_percent = mem.percent
+    disk = psutil.disk_usage('/')
+    disk_used = round(disk.used / (1024 ** 3), 2)
+    disk_total = round(disk.total / (1024 ** 3), 2)
+    disk_percent = disk.percent
+
+    text = (
+        "**📊 Bot Resource Usage:**\n\n"
+
+        f"⏱️ Uptime: `{uptime_str}`\n"
+        f"🖥️ CPU Usage: `{cpu_percent}%`\n"
+        f"🧠 Memory: `{mem_used}MB / {mem_total}MB ({mem_percent}%)`\n"
+        f"💾 Disk: `{disk_used}GB / {disk_total}GB ({disk_percent}%)`"
+    )
+    await message.reply_text(text)
