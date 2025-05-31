@@ -766,7 +766,7 @@ async def auto_filter(client, msg, spoll=False):
             **locals()
         )
     else:
-        cap = f"🤖 Beep boop! I found something interesting for: *{search}*"
+        cap = f"__🤖 Beep boop! I found something interesting for:__ **{search}**"
 
     if imdb and imdb.get('poster'):
         try:
