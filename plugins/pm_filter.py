@@ -654,9 +654,11 @@ async def auto_filter(client, msg, spoll=False):
         settings = await get_settings(message.chat.id)
         # Delete message if it contains spammy links or usernames
         if re.search(r'(?im)(?:https?://|www\.|t\.me/|telegram\.dog/)\S+|@[a-z0-9_]{5,32}\b', message.text):
-            await asyncio.sleep(3)
-            await message.delete()
-            return
+            # ✅ Don't delete if user is an admin
+            if message.from_user and message.from_user.id not in ADMINS:
+                await asyncio.sleep(1)
+                await message.delete()
+                return
         if message.text.startswith("/"):
             return
         if re.findall(r"((^\/|^,|^!|^\.|^[\U0001F600-\U000E007F]).*)", message.text):
