@@ -693,13 +693,6 @@ async def auto_filter(client, msg, spoll=False):
             for file in files
         ]
 
-    btn.insert(0,
-        [
-            InlineKeyboardButton(f'ℹ iɴꜰᴏ', 'reqinfo'),
-            InlineKeyboardButton(f'📽 Mᴏᴠɪᴇ', 'minfo'),
-            InlineKeyboardButton(f'💀 Sᴇʀɪᴇꜱ', 'sinfo')
-        ]
-    )
     else:
         btn = [
             [
