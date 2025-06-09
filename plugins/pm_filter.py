@@ -12,7 +12,7 @@ from info import ADMINS, AUTH_CHANNEL, AUTH_USERS, CUSTOM_FILE_CAPTION, AUTH_GRO
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 from pyrogram import Client, filters, enums
 from pyrogram.errors import FloodWait, UserIsBlocked, MessageNotModified, PeerIdInvalid
-from utils import get_size, is_subscribed, get_poster, search_gagala, temp, get_settings, save_group_settings, send_all
+from utils import get_size, is_subscribed, get_poster, search_gagala, temp, get_settings, save_group_settings
 from database.users_chats_db import db
 from database.ia_filterdb import Media, Media2, get_file_details, get_search_results, get_bad_files, db as clientDB, db2 as clientDB2
 from database.filters_mdb import (
@@ -90,7 +90,7 @@ async def next_page(bot, query):
         )
     btn.insert(1,
             [
-                InlineKeyboardButton('📤 Send All', callback_data=f"send_fall#files#{offset}#{req}"),
+                InlineKeyboardButton("! Lᴀɴɢᴜᴀɢᴇs !", callback_data=f"select_lang#{req}"),
                 InlineKeyboardButton("⚡ Cʜᴇᴄᴋ Bᴏᴛ PM ⚡", url=f"https://t.me/{temp.U_NAME}")
             ]
         )
@@ -127,6 +127,105 @@ async def next_page(bot, query):
         pass
     await query.answer()
 
+@Client.on_callback_query(filters.regex(r"^lang"))
+async def language_check(bot, query):
+    _, userid, language = query.data.split("#")
+    
+    if int(userid) not in [query.from_user.id, 0]:
+        return await query.answer(script.ALRT_TXT.format(query.from_user.first_name), show_alert=True)
+
+    if language == "unknown":
+        return await query.answer("Sᴇʟᴇᴄᴛ ᴀɴʏ ʟᴀɴɢᴜᴀɢᴇ ғʀᴏᴍ ᴛʜᴇ ʙᴇʟᴏᴡ ʙᴜᴛᴛᴏɴs !", show_alert=True)
+
+    movie = temp.KEYWORD.get(query.from_user.id)
+    if not movie:
+        return await query.answer(script.OLD_ALRT_TXT.format(query.from_user.first_name), show_alert=True)
+
+    if language != "home":
+        movie = f"{movie} {language}"
+
+    files, offset, total_results = await get_search_results(query.message.chat.id, movie, offset=0, filter=True)
+    if not files:
+        return await query.answer(f"Sᴏʀʀʏ, Nᴏ ғɪʟᴇs ғᴏᴜɴᴅ ғᴏʀ ʏᴏᴜʀ ᴏ̨ᴜᴇʀʏ {movie}.", show_alert=True)
+
+    settings = await get_settings(query.message.chat.id)
+    temp.SEND_ALL_TEMP[query.from_user.id] = files
+    pre = 'filep' if settings['file_secure'] else 'file'
+
+    # Generate inline buttons
+    if settings['button']:
+        btn = [
+            [InlineKeyboardButton(text=f"[{get_size(file.file_size)}] {file.file_name}", callback_data=f'{pre}#{file.file_id}')]
+            for file in files
+        ]
+    else:
+        btn = [
+            [
+                InlineKeyboardButton(text=f"{file.file_name}", callback_data=f'{pre}#{file.file_id}'),
+                InlineKeyboardButton(text=f"{get_size(file.file_size)}", callback_data=f'{pre}#{file.file_id}')
+            ]
+            for file in files
+        ]
+
+    # Insert top control buttons
+    btn.insert(0, [
+        InlineKeyboardButton(f'ɪɴꜰᴏ', 'reqinfo'),
+        InlineKeyboardButton(f'ᴍᴏᴠɪᴇ', 'minfo'),
+        InlineKeyboardButton(f'ꜱᴇʀɪᴇꜱ', 'sinfo')
+    ])
+    btn.insert(1, [
+        InlineKeyboardButton("! Lᴀɴɢᴜᴀɢᴇs !", callback_data=f"select_lang#{userid}"),
+        InlineKeyboardButton("⚡ Cʜᴇᴄᴋ Bᴏᴛ PM ⚡", url=f"https://t.me/{temp.U_NAME}")
+    ])
+
+    # Pagination
+    if offset != "":
+        key = f"{query.message.chat.id}-{query.message.id}"
+        BUTTONS[key] = movie
+        req = userid
+        btn.append([
+            InlineKeyboardButton("Page", callback_data="pages"),
+            InlineKeyboardButton(text=f"1/{math.ceil(int(total_results)/10)}", callback_data="pages"),
+            InlineKeyboardButton(text="Next ➪", callback_data=f"next_{req}_{key}_{offset}")
+        ])
+    else:
+        btn.append([InlineKeyboardButton(text="𝐍𝐎 𝐌𝐎𝐑𝐄 𝐏𝐀𝐆𝐄𝐒 𝐀𝐕𝐀𝐈𝐋𝐀𝐁𝐋𝐄", callback_data="pages")])
+
+    try:
+        await query.edit_message_reply_markup(reply_markup=InlineKeyboardMarkup(btn))
+    except MessageNotModified:
+        pass
+
+    await query.answer()
+@Client.on_callback_query(filters.regex(r"^select_lang"))
+async def select_language(bot, query):
+    _, userid = query.data.split("#")
+    if int(userid) not in [query.from_user.id, 0]:
+        return await query.answer(script.ALRT_TXT.format(query.from_user.first_name), show_alert=True)
+    btn = [[
+        InlineKeyboardButton("Sᴇʟᴇᴄᴛ Yᴏᴜʀ Dᴇꜱɪʀᴇᴅ Lᴀɴɢᴜᴀɢᴇ ↓", callback_data=f"lang#{userid}#unknown")
+    ],[
+        InlineKeyboardButton("Eɴɢʟɪꜱʜ", callback_data=f"lang#{userid}#eng"),
+        InlineKeyboardButton("Tᴀᴍɪʟ", callback_data=f"lang#{userid}#tam"),
+        InlineKeyboardButton("Hɪɴᴅɪ", callback_data=f"lang#{userid}#hin")
+    ],[
+        InlineKeyboardButton("Kᴀɴɴᴀᴅᴀ", callback_data=f"lang#{userid}#kan"),
+        InlineKeyboardButton("Tᴇʟᴜɢᴜ", callback_data=f"lang#{userid}#tel")
+    ],[
+        InlineKeyboardButton("Mᴀʟᴀʏᴀʟᴀᴍ", callback_data=f"lang#{userid}#mal")
+    ],[
+        InlineKeyboardButton("Mᴜʟᴛɪ Aᴜᴅɪᴏ", callback_data=f"lang#{userid}#multi"),
+        InlineKeyboardButton("Dᴜᴀʟ Aᴜᴅɪᴏ", callback_data=f"lang#{userid}#dual")
+    ],[
+        InlineKeyboardButton("Gᴏ Bᴀᴄᴋ", callback_data=f"lang#{userid}#home")
+    ]]
+    try:
+        await query.edit_message_reply_markup(
+            reply_markup=InlineKeyboardMarkup(btn)
+        )
+    except MessageNotModified:
+        pass
+    await query.answer()
 
 @Client.on_callback_query()
 async def cb_handler(client: Client, query: CallbackQuery):
@@ -406,20 +505,6 @@ async def cb_handler(client: Client, query: CallbackQuery):
         await query.answer(text=script.SINFO, show_alert=True)   
     elif query.data == "pages":
         await query.answer("𝑊ℎ𝑦 𝐴𝑟𝑒 𝑌𝑜𝑢 𝐶𝑙𝑖𝑐𝑘𝑒𝑑 𝐻𝑒𝑟𝑒 !!!")
-#send file all to pm cb        
-    elif query.data.startswith("send_fall"):
-        temp_var, ident, offset, userid = query.data.split("#")
-        if int(userid) not in [query.from_user.id, 0]:
-            return await query.answer(script.ALRT_TXT.format(query.from_user.first_name), show_alert=True)
-        files = temp.SEND_ALL_TEMP.get(query.from_user.id)
-        is_over = await send_all(client, query.from_user.id, files, ident)
-        if is_over == 'done':
-            return await query.answer(f"Hᴇʏ {query.from_user.first_name}, Aʟʟ ғɪʟᴇs ᴏɴ ᴛʜɪs ᴘᴀɢᴇ ʜᴀs ʙᴇᴇɴ sᴇɴᴛ sᴜᴄᴄᴇssғᴜʟʟʏ ᴛᴏ ʏᴏᴜʀ PM !", show_alert=True)
-        elif is_over == 'fsub':
-            return await query.answer("Hᴇʏ, Yᴏᴜ ᴀʀᴇ ɴᴏᴛ ᴊᴏɪɴᴇᴅ ɪɴ ᴍʏ ʙᴀᴄᴋ ᴜᴘ ᴄʜᴀɴɴᴇʟ. Cʜᴇᴄᴋ ᴍʏ PM ᴛᴏ ᴊᴏɪɴ ᴀɴᴅ ɢᴇᴛ ғɪʟᴇs !", show_alert=True)
-        else:
-            return await query.answer(f"Eʀʀᴏʀ: {is_over}", show_alert=True)
-#sndfll cb ended
     elif query.data == "start":
         buttons = [[
             InlineKeyboardButton('➕ Add Me To Your Groups ➕', url=f'http://t.me/{temp.U_NAME}?startgroup=true')
@@ -687,6 +772,7 @@ async def auto_filter(client, msg, spoll=False):
             return
     else:
         settings = await get_settings(msg.message.chat.id)
+        temp.KEYWORD[message.from_user.id] = search
         message = msg.message.reply_to_message
         search, files, offset, total_results = spoll
 
@@ -729,7 +815,7 @@ async def auto_filter(client, msg, spoll=False):
     ])
 
     btn.insert(1, [
-        InlineKeyboardButton('📤 Send All', callback_data=f"send_fall#files#{offset}#{req}"),
+        InlineKeyboardButton("! Lᴀɴɢᴜᴀɢᴇs !", callback_data=f"select_lang#{message.from_user.id}"),
         InlineKeyboardButton("⚡ Cʜᴇᴄᴋ Bᴏᴛ PM ⚡", url=f"https://t.me/{temp.U_NAME}")
     ])
 
