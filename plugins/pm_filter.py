@@ -729,7 +729,7 @@ async def auto_filter(client, msg, spoll=False):
     ])
 
     btn.insert(1, [
-        InlineKeyboardButton('📤 Send All', callback_data=f"send_fall#{pre}#{0}#{message.from_user.id}"),
+        InlineKeyboardButton('📤 Send All', callback_data=f"send_fall#files#{offset}#{req}"),
         InlineKeyboardButton("⚡ Cʜᴇᴄᴋ Bᴏᴛ PM ⚡", url=f"https://t.me/{temp.U_NAME}")
     ])
 
