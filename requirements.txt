@@ -10,3 +10,4 @@ bs4
 git+https://github.com/Joelkb/cinemagoer
 aiohttp
 aiofiles
+pytz
