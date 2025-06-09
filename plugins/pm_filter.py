@@ -12,7 +12,7 @@ from info import ADMINS, AUTH_CHANNEL, AUTH_USERS, CUSTOM_FILE_CAPTION, AUTH_GRO
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 from pyrogram import Client, filters, enums
 from pyrogram.errors import FloodWait, UserIsBlocked, MessageNotModified, PeerIdInvalid
-from utils import get_size, is_subscribed, get_poster, search_gagala, temp, get_settings, save_group_settings
+from utils import get_size, is_subscribed, get_poster, search_gagala, temp, get_settings, save_group_settings, send_all
 from database.users_chats_db import db
 from database.ia_filterdb import Media, Media2, get_file_details, get_search_results, get_bad_files, db as clientDB, db2 as clientDB2
 from database.filters_mdb import (
@@ -86,6 +86,12 @@ async def next_page(bot, query):
                 InlineKeyboardButton(f'ℹ iɴꜰᴏ', 'reqinfo'),
                 InlineKeyboardButton(f'📽 Mᴏᴠɪᴇ', 'minfo'),
                 InlineKeyboardButton(f'💀 Sᴇʀɪᴇꜱ', 'sinfo')
+            ]
+        )
+    btn.insert(1,
+            [
+                InlineKeyboardButton('📤 Send All', callback_data=f"send_fall#files#{offset}#{req}"),
+                InlineKeyboardButton("⚡ Cʜᴇᴄᴋ Bᴏᴛ PM ⚡", url=f"https://t.me/{temp.U_NAME}")
             ]
         )
 
@@ -353,12 +359,21 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await query.answer(url=f"https://t.me/{temp.U_NAME}?start={ident}_{file_id}")
         except Exception as e:
             await query.answer(url=f"https://t.me/{temp.U_NAME}?start={ident}_{file_id}")
-    elif query.data.startswith("checksub"): #checksub join the channel
+    elif query.data.startswith("checksub"):
         links = await is_subscribed(client, query=query)
         if AUTH_CHANNEL and len(links) >= 1:
-            await query.answer("Jᴏɪɴ ᴏᴜʀ Bᴀᴄᴋ-ᴜᴘ ᴄʜᴀɴɴᴇʟs ᴍᴀʜɴ! 😒\n\nI Like Your Smartness, But Don't Be Oversmart 😒", show_alert=True)
+            await query.answer("Jᴏɪɴ ᴏᴜʀ Bᴀᴄᴋ-ᴜᴘ ᴄʜᴀɴɴᴇʟs ᴍᴀʜɴ! 😒", show_alert=True)
             return
         ident, file_id = query.data.split("#")
+        if file_id == "send_all":
+            send_files = temp.SEND_ALL_TEMP.get(query.from_user.id)
+            is_over = await send_all(client, query.from_user.id, send_files, ident)
+            if is_over == 'done':
+                return await query.answer(f"Hᴇʏ {query.from_user.first_name}, Aʟʟ ғɪʟᴇs ᴏɴ ᴛʜɪs ᴘᴀɢᴇ ʜᴀs ʙᴇᴇɴ sᴇɴᴛ sᴜᴄᴄᴇssғᴜʟʟʏ ᴛᴏ ʏᴏᴜʀ PM !", show_alert=True)
+            elif is_over == 'fsub':
+                return await query.answer("Hᴇʏ, Yᴏᴜ ᴀʀᴇ ɴᴏᴛ ᴊᴏɪɴᴇᴅ ɪɴ ᴍʏ ʙᴀᴄᴋ ᴜᴘ ᴄʜᴀɴɴᴇʟ. Cʜᴇᴄᴋ ᴍʏ PM ᴛᴏ ᴊᴏɪɴ ᴀɴᴅ ɢᴇᴛ ғɪʟᴇs !", show_alert=True)
+            else:
+                return await query.answer(f"Eʀʀᴏʀ: {is_over}", show_alert=True)
         files_ = await get_file_details(file_id)
         if not files_:
             return await query.answer('Nᴏ sᴜᴄʜ ғɪʟᴇ ᴇxɪsᴛ.')
@@ -383,16 +398,6 @@ async def cb_handler(client: Client, query: CallbackQuery):
             caption=f_caption,
             protect_content=True if ident == 'checksubp' else False
         )
-
-    #ALERT FN IN SPELL CHECK FOR LANGAUGES TO KNOW HOW TO TYPE MOVIES esp english spell check goto adv spell check to check donot change the codes      
-    elif query.data == "esp":
-        await query.answer(text=script.ENG_SPELL, show_alert="true")
-    elif query.data == "msp":
-        await query.answer(text=script.MAL_SPELL, show_alert="true")
-    elif query.data == "hsp":
-        await query.answer(text=script.HIN_SPELL, show_alert="true")
-    elif query.data == "tsp":
-        await query.answer(text=script.TAM_SPELL, show_alert="true")
     elif query.data == "reqinfo":
         await query.answer(text=script.REQINFO, show_alert=True)
     elif query.data == "minfo":
@@ -401,6 +406,20 @@ async def cb_handler(client: Client, query: CallbackQuery):
         await query.answer(text=script.SINFO, show_alert=True)   
     elif query.data == "pages":
         await query.answer("𝑊ℎ𝑦 𝐴𝑟𝑒 𝑌𝑜𝑢 𝐶𝑙𝑖𝑐𝑘𝑒𝑑 𝐻𝑒𝑟𝑒 !!!")
+#send file all to pm cb        
+    elif query.data.startswith("send_fall"):
+        temp_var, ident, offset, userid = query.data.split("#")
+        if int(userid) not in [query.from_user.id, 0]:
+            return await query.answer(script.ALRT_TXT.format(query.from_user.first_name), show_alert=True)
+        files = temp.SEND_ALL_TEMP.get(query.from_user.id)
+        is_over = await send_all(client, query.from_user.id, files, ident)
+        if is_over == 'done':
+            return await query.answer(f"Hᴇʏ {query.from_user.first_name}, Aʟʟ ғɪʟᴇs ᴏɴ ᴛʜɪs ᴘᴀɢᴇ ʜᴀs ʙᴇᴇɴ sᴇɴᴛ sᴜᴄᴄᴇssғᴜʟʟʏ ᴛᴏ ʏᴏᴜʀ PM !", show_alert=True)
+        elif is_over == 'fsub':
+            return await query.answer("Hᴇʏ, Yᴏᴜ ᴀʀᴇ ɴᴏᴛ ᴊᴏɪɴᴇᴅ ɪɴ ᴍʏ ʙᴀᴄᴋ ᴜᴘ ᴄʜᴀɴɴᴇʟ. Cʜᴇᴄᴋ ᴍʏ PM ᴛᴏ ᴊᴏɪɴ ᴀɴᴅ ɢᴇᴛ ғɪʟᴇs !", show_alert=True)
+        else:
+            return await query.answer(f"Eʀʀᴏʀ: {is_over}", show_alert=True)
+#sndfll cb ended
     elif query.data == "start":
         buttons = [[
             InlineKeyboardButton('➕ Add Me To Your Groups ➕', url=f'http://t.me/{temp.U_NAME}?startgroup=true')
@@ -704,6 +723,10 @@ async def auto_filter(client, msg, spoll=False):
         InlineKeyboardButton(f'ℹ iɴꜰᴏ', 'reqinfo'),
         InlineKeyboardButton(f'📽 Mᴏᴠɪᴇ', 'minfo'),
         InlineKeyboardButton(f'💀 Sᴇʀɪᴇꜱ', 'sinfo')
+    ])
+    btn.insert(1, [
+        InlineKeyboardButton('📤 Send All', callback_data=f"send_fall#files#{offset}#{req}"),
+        InlineKeyboardButton("⚡ Cʜᴇᴄᴋ Bᴏᴛ PM ⚡", url=f"https://t.me/{temp.U_NAME}")
     ])
 
     # ✅ Pagination buttons
