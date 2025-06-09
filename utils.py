@@ -1,6 +1,6 @@
 import logging
-from pyrogram.errors import InputUserDeactivated, UserNotParticipant, FloodWait, UserIsBlocked, PeerIdInvalid
-from info import AUTH_CHANNEL, LONG_IMDB_DESCRIPTION, MAX_LIST_ELM
+from pyrogram.errors import InputUserDeactivated, UserNotParticipant, FloodWait, UserIsBlocked, PeerIdInvalid, ChatAdminRequiredlid
+from info import AUTH_CHANNEL, LONG_IMDB_DESCRIPTION, MAX_LIST_ELM, PROTECT_CONTENT, CUSTOM_FILE_CAPTION, LOG_CHANNEL
 from imdb import Cinemagoer 
 import asyncio
 from pyrogram.types import Message, InlineKeyboardButton
@@ -8,11 +8,13 @@ from pyrogram import enums
 from typing import Union
 import re
 import os
+import pytz
 from datetime import datetime
 from typing import List
 from database.users_chats_db import db
 from bs4 import BeautifulSoup
 import requests
+import aiohttp
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -40,6 +42,7 @@ class temp(object):
     B_NAME = None
     SETTINGS = {}
     SEND_ALL_TEMP = {}
+    KEYWORD = {}
 
 async def is_subscribed(bot, query=None, userid=None):
     invite_links = []
@@ -233,14 +236,12 @@ async def send_all(bot, userid, files, ident):
             f_caption = f"{title}"
 
         try:
-            d=await bot.send_cached_media(
+            await bot.send_cached_media(
                 chat_id=userid,
                 file_id=file.file_id,
                 caption=f_caption,
                 protect_content=True if ident == "filep" else False
             )
-            await asyncio.sleep(160)
-            await d.delete()
         except UserIsBlocked:
             logger.error(f"Usᴇʀ: {userid} ʙʟᴏᴄᴋᴇᴅ ᴛʜᴇ ʙᴏᴛ. Uɴʙʟᴏᴄᴋ ᴛʜᴇ ʙᴏᴛ!")
             return "Usᴇʀ ɪs ʙʟᴏᴄᴋᴇᴅ ᴛʜᴇ ʙᴏᴛ ! Uɴʙʟᴏᴄᴋ ᴛᴏ sᴇɴᴅ ғɪʟᴇs!"
@@ -252,8 +253,6 @@ async def send_all(bot, userid, files, ident):
             return f"Eʀʀᴏʀ: {e}"
 
     return 'done'
-
-
 
 async def get_settings(group_id):
     settings = temp.SETTINGS.get(group_id)
