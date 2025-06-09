@@ -692,6 +692,9 @@ async def auto_filter(client, msg, spoll=False):
 
     pre = 'filep' if settings['file_secure'] else 'file'
 
+    # Define 'req' early to avoid UnboundLocalError
+    req = message.from_user.id if message.from_user else 0
+
     # ✅ Create file buttons
     if settings["button"]:
         btn = [
@@ -724,16 +727,17 @@ async def auto_filter(client, msg, spoll=False):
         InlineKeyboardButton(f'📽 Mᴏᴠɪᴇ', 'minfo'),
         InlineKeyboardButton(f'💀 Sᴇʀɪᴇꜱ', 'sinfo')
     ])
+
     btn.insert(1, [
-        InlineKeyboardButton('📤 Send All', callback_data=f"send_fall#files#{offset}#{req}"),
+        InlineKeyboardButton('📤 Send All', callback_data=f"send_fall#{pre}#{0}#{message.from_user.id}"),
         InlineKeyboardButton("⚡ Cʜᴇᴄᴋ Bᴏᴛ PM ⚡", url=f"https://t.me/{temp.U_NAME}")
     ])
 
     # ✅ Pagination buttons
     if offset != "":
+        req = message.from_user.id if message.from_user else 0
         key = f"{message.chat.id}-{message.id}"
         BUTTONS[key] = search
-        req = message.from_user.id if message.from_user else 0
         btn.append([
             InlineKeyboardButton(text=f"🗓 1/{math.ceil(int(total_results) / 10)}", callback_data="pages"),
             InlineKeyboardButton(text="Nᴇxᴛ →", callback_data=f"next_{req}_{key}_{offset}")
@@ -776,7 +780,7 @@ async def auto_filter(client, msg, spoll=False):
                 rating=imdb['rating'],
                 url=imdb['url']
             )
-        except Exception as e:
+        except Exception:
             logger.exception("Template formatting failed")
             cap = f"**🎬 Search result for:** {search}"
     else:
