@@ -410,6 +410,8 @@ async def cb_handler(client: Client, query: CallbackQuery):
         ], [
             InlineKeyboardButton('ℹ️ Help', callback_data='help'),
             InlineKeyboardButton('😊 About', callback_data='about')
+        ], [
+            InlineKeyboardButton('© Dᴍᴄᴀ', callback_data='dmca')
         ]]
         reply_markup = InlineKeyboardMarkup(buttons)
         await query.message.edit_text(
@@ -426,7 +428,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             InlineKeyboardButton('Connection', callback_data='coct'),
             InlineKeyboardButton('Extra Mods', callback_data='extra')
         ], [
-            InlineKeyboardButton('🏠 Home', callback_data='start'),
+            InlineKeyboardButton('⟸ Bᴀᴄᴋ', callback_data='start'),
             InlineKeyboardButton('🔮 Status', callback_data='stats')
         ]]
         reply_markup = InlineKeyboardMarkup(buttons)
@@ -466,6 +468,16 @@ async def cb_handler(client: Client, query: CallbackQuery):
         reply_markup = InlineKeyboardMarkup(buttons)
         await query.message.edit_text(
             text=script.BUTTON_TXT,
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )
+        elif query.data == "dmca":
+        buttons = [[
+            InlineKeyboardButton('⟸ Bᴀᴄᴋ', callback_data='start')
+        ]]
+        reply_markup = InlineKeyboardMarkup(buttons)
+        await query.message.edit_text(
+            text=script.DMCA_TXT,
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )
@@ -657,7 +669,7 @@ async def auto_filter(client, msg, spoll=False):
             # ✅ If no results, offer Google search
             if not files:
                 btn = [[
-                    InlineKeyboardButton("🌐 Not in Movie? Search on Google", url=f"https://www.google.com/search?q={search.replace(' ', '+')}")
+                    InlineKeyboardButton("🌐 Not in my DB? Search on Google", url=f"https://www.google.com/search?q={search.replace(' ', '+')}")
                 ]]
                 autodel = await message.reply_text(
                     f"__🤖 No results found for:__ **{search}**",
