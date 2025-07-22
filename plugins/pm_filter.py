@@ -669,10 +669,10 @@ async def auto_filter(client, msg, spoll=False):
             # ✅ If no results, offer Google search
             if not files:
                 btn = [[
-                    InlineKeyboardButton("🌐 Not in my DB? Search on Google", url=f"https://www.google.com/search?q={search.replace(' ', '+')}")
+                    InlineKeyboardButton("🔻I Could't find anything. Chcek on google", url=f"https://www.google.com/search?q={search.replace(' ', '+')}")
                 ]]
                 autodel = await message.reply_text(
-                    f"__🤖 No results found for:__ **{search}**",
+                    f"__🔍 No results found for:__ **{search}**",
                     reply_markup=InlineKeyboardMarkup(btn)
                 )
                 await asyncio.sleep(15)
