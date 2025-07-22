@@ -13,7 +13,7 @@ I am a an autofilter bot which finds & shares media from my database.</b>"""
 ○ 𝖫𝗂𝖻𝗋𝖺𝗋𝗒  :  Program 
 ○ Bot Sever  :  MC 🔺
 ⛃ 𝖣𝖺𝗍𝖺𝖻𝖺𝗌𝖾  :  MongoDB Atlas
-○ 𝖵𝖾𝗋𝗌𝗂𝗈𝗇  :  Android Kunjappan Ver.5.25></b>"""
+○ 𝖵𝖾𝗋𝗌𝗂𝗈𝗇  :  Android Kunjappan Ver.5.25</b>"""
     
     SOURCE_TXT = """<b>NOTE:</b>
 
