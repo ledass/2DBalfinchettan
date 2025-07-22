@@ -83,14 +83,14 @@ async def next_page(bot, query):
         ]
     btn.insert(0, 
             [
-                InlineKeyboardButton(f'ℹ iɴꜰᴏ', 'reqinfo'),
-                InlineKeyboardButton(f'📽 Mᴏᴠɪᴇ', 'minfo'),
-                InlineKeyboardButton(f'💀 Sᴇʀɪᴇꜱ', 'sinfo')
+                InlineKeyboardButton(f'❗️Info ', 'reqinfo'),
+                InlineKeyboardButton(f'🔻 Movie', 'minfo'),
+                InlineKeyboardButton(f'👓 Series', 'sinfo')
             ]
         )
     btn.insert(1,
             [
-                InlineKeyboardButton("⚡ Cʜᴇᴄᴋ Bᴏᴛ PM ⚡", url=f"https://t.me/{temp.U_NAME}")
+                InlineKeyboardButton("💎 Cʜᴇᴄᴋ Bᴏᴛ PM 💎", url=f"https://t.me/{temp.U_NAME}")
             ]
         )
 
@@ -720,13 +720,13 @@ async def auto_filter(client, msg, spoll=False):
 
     # ✅ Add static top buttons
     btn.insert(0, [
-        InlineKeyboardButton(f'ℹ iɴꜰᴏ', 'reqinfo'),
-        InlineKeyboardButton(f'📽 Mᴏᴠɪᴇ', 'minfo'),
-        InlineKeyboardButton(f'💀 Sᴇʀɪᴇꜱ', 'sinfo')
+        InlineKeyboardButton(f'❗️Info ', 'reqinfo'),
+        InlineKeyboardButton(f'🔻 Movie', 'minfo'),
+        InlineKeyboardButton(f'👓 Series', 'sinfo')
     ])
 
     btn.insert(1, [
-        InlineKeyboardButton("⚡ Cʜᴇᴄᴋ Bᴏᴛ PM ⚡", url=f"https://t.me/{temp.U_NAME}")
+        InlineKeyboardButton("💎 Cʜᴇᴄᴋ Bᴏᴛ PM 💎", url=f"https://t.me/{temp.U_NAME}")
     ])
 
     # ✅ Pagination buttons
