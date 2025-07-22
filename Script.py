@@ -12,14 +12,11 @@ class script(object):
     
     ABOUT_TXT = """<b><blockquote>⍟───[ ᴍʏ ᴅᴇᴛᴀɪʟꜱ ]───⍟</blockquote>
     
-‣ ᴍʏ ɴᴀᴍᴇ : <a href=https://t.me/{}>Click Here</a>
-‣ ᴍʏ ʙᴇsᴛ ғʀɪᴇɴᴅ : <a href='tg://settings'>ᴛʜɪs ᴘᴇʀsᴏɴ</a> 
-‣ ᴅᴇᴠᴇʟᴏᴘᴇʀ : <a href="https://t.me/im_goutham_josh">ᴏᴡɴᴇʀ</a> 
-‣ ʟɪʙʀᴀʀʏ : <a href='https://docs.pyrogram.org/'>ᴘʏʀᴏɢʀᴀᴍ</a> 
-‣ ʟᴀɴɢᴜᴀɢᴇ : <a href='https://www.python.org/download/releases/3.0/'>ᴘʏᴛʜᴏɴ 3</a> 
-‣ ᴅᴀᴛᴀ ʙᴀsᴇ : <a href='https://www.mongodb.com/'>ᴍᴏɴɢᴏ ᴅʙ</a> 
-‣ ʙᴏᴛ sᴇʀᴠᴇʀ : <a href='https://koyeb.com'>Koyeb</a> 
-‣ ʙᴜɪʟᴅ sᴛᴀᴛᴜs : ᴠ2.7.1 [sᴛᴀʙʟᴇ]></b>"""
+○ 𝖫𝖺𝗇𝗀𝗎𝖺𝗀𝖾  :  Python 3
+○ 𝖫𝗂𝖻𝗋𝖺𝗋𝗒  :  Program 
+○ Bot Sever  :  MC 🔺
+⛃ 𝖣𝖺𝗍𝖺𝖻𝖺𝗌𝖾  :  MongoDB Atlas
+○ 𝖵𝖾𝗋𝗌𝗂𝗈𝗇  :  Android Kunjappan Ver.5.25></b>"""
     
     SOURCE_TXT = """<b>NOTE:</b>
 
