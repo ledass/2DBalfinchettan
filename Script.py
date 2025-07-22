@@ -1,6 +1,6 @@
 class script(object):
     
-    START_TXT = """<b><blockquote>𝙷𝙴𝙻L𝙾 {}</blockquote></b>,
+    START_TXT = """ ʜᴇʏ ʙʀᴏ/ꜱɪꜱ ɴɪᴄᴇ ᴛᴏ ᴍᴇᴇᴛ ʏᴏᴜ ❤️‍🩹 {}.
     
 I am a an autofilter bot which finds & shares media from my database.</b>"""
     
