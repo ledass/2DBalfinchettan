@@ -18,9 +18,9 @@ I am a an autofilter bot which finds & shares media from my database.</b>"""
     SOURCE_TXT = """<b>NOTE:</b>
 
 Tʜɪs Bᴏᴛ ɪs Fʀᴇᴇ Tᴏ Usᴇ 
-2ᴅʙ Fᴇᴀᴛᴜʀᴇ - SPELL CHECK REMOVED :)
+🔻 MC CINEMAS  :)
 
-Sᴏᴜʀᴄᴇ Cᴏᴅᴇ : <a href="github.com/GouthamSER/2DB">𝘾𝙤𝙙𝙚 📌</a>"""
+Sᴏᴜʀᴄᴇ Cᴏᴅᴇ : <a href="https://t.me/+QbWh1eEL0v4wM2Zl">𝘾𝙤𝙙𝙚 📌</a>"""
     
     MANUELFILTER_TXT = """ʜᴇʟᴘ: <b>ꜰɪʟᴛᴇʀꜱ</b>
 - ꜰɪʟᴛᴇʀ ɪꜱ ᴀ ꜰᴇᴀᴛᴜʀᴇ ᴡᴇʀᴇ ᴜꜱᴇʀꜱ ᴄᴀɴ ꜱᴇᴛ ᴀᴜᴛᴏᴍᴀᴛᴇᴅ ʀᴇᴘʟɪᴇꜱ ꜰᴏʀ ᴀ ᴘᴀʀᴛɪᴄᴜʟᴀʀ ᴋᴇʏᴡᴏʀᴅ ᴀɴᴅ ɪ ᴡɪʟʟ ʀᴇꜱᴘᴏɴᴅ ᴡʜᴇɴᴇᴠᴇʀ ᴀ ᴋᴇʏᴡᴏʀᴅ ɪꜱ ꜰᴏᴜɴᴅ ɪɴ ᴛʜᴇ ᴍᴇꜱꜱᴀɢᴇ
