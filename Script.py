@@ -7,7 +7,7 @@ I am a an autofilter bot which finds & shares media from my database.</b>"""
     HELP_TXT = """𝙷𝙴𝚈 {}
 𝙷𝙴𝚁𝙴 𝙸𝚂 𝚃𝙷𝙴 𝙷𝙴𝙻𝙿 𝙵𝙾𝚁 𝙼𝚈 𝙲𝙾𝙼𝙼𝙰𝙽𝙳𝚂."""
     
-    ABOUT_TXT = """<b><blockquote>⍟───[ ᴍʏ ᴅᴇᴛᴀɪʟꜱ ]───⍟</blockquote>
+    ABOUT_TXT = """<b>
     
 ○ 𝖫𝖺𝗇𝗀𝗎𝖺𝗀𝖾  :  Python 3
 ○ 𝖫𝗂𝖻𝗋𝖺𝗋𝗒  :  Program 
