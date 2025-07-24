@@ -226,7 +226,7 @@ async def start(client, message: Message):
                 file_id=file_id,
                 protect_content=True if pre == 'filep' else False,
                 )
-            k = await client.send_message(chat_id = message.from_user.id, text=f"<blockquote><b><u>❗️❗️❗️IMPORTANT❗️️❗️❗️</u></b>\n\nᴛʜɪs ᴍᴇssᴀɢᴇ ᴡɪʟʟ ʙᴇ ᴅᴇʟᴇᴛᴇᴅ ɪɴ <b><u>10 mins</u> 🫥 <i></b>(ᴅᴜᴇ ᴛᴏ ᴄᴏᴘʏʀɪɢʜᴛ ɪssᴜᴇs)</i>.\n\n<b><i>ᴘʟᴇᴀsᴇ ғᴏʀᴡᴀʀᴅ ᴛʜɪs ᴍᴇssᴀɢᴇ ᴛᴏ ʏᴏᴜʀ sᴀᴠᴇᴅ ᴍᴇssᴀɢᴇs ᴏʀ ᴀɴʏ ᴘʀɪᴠᴀᴛᴇ ᴄʜᴀᴛ.</i></b></blockquote>")
+            k = await client.send_message(chat_id = message.from_user.id, text=f"<blockquote><b><u>📁 𝗪𝗮𝗿𝗻𝗶𝗻𝗴 ⚠️</u>Please save the file to your saved messages, it will be deleted in 10.00 mins.</blockquote>")
             await asyncio.sleep(600)
             await msg.delete()
             await k.edit_text("<b>✅ Yᴏᴜʀ Mᴇssᴀɢᴇ ɪs sᴜᴄᴄᴇssғᴜʟʟʏ ᴅᴇʟᴇᴛᴇᴅ</b>")
@@ -264,7 +264,7 @@ async def start(client, message: Message):
         caption=f_caption,
         protect_content=True if pre == 'filep' else False,
         )
-    k = await client.send_message(chat_id = message.from_user.id, text=f"<blockquote><b><u>❗️❗️❗️IMPORTANT❗️️❗️❗️</u></b>\n\nᴛʜɪs ᴍᴇssᴀɢᴇ ᴡɪʟʟ ʙᴇ ᴅᴇʟᴇᴛᴇᴅ ɪɴ <b><u>10 mins</u> 🫥 <i></b>(ᴅᴜᴇ ᴛᴏ ᴄᴏᴘʏʀɪɢʜᴛ ɪssᴜᴇs)</i>.\n\n<b><i>ᴘʟᴇᴀsᴇ ғᴏʀᴡᴀʀᴅ ᴛʜɪs ᴍᴇssᴀɢᴇ ᴛᴏ ʏᴏᴜʀ sᴀᴠᴇᴅ ᴍᴇssᴀɢᴇs ᴏʀ ᴀɴʏ ᴘʀɪᴠᴀᴛᴇ ᴄʜᴀᴛ.</i></b></blockquote>")
+    k = await client.send_message(chat_id = message.from_user.id, text=f"<blockquote><b><u>📁 𝗪𝗮𝗿𝗻𝗶𝗻𝗴 ⚠️</u>Please save the file to your saved messages, it will be deleted in 10.00 mins.</blockquote>")
     await asyncio.sleep(600)
     await m.delete()
     await k.edit_text("<b>✅ Yᴏᴜʀ Mᴇssᴀɢᴇ ɪs sᴜᴄᴄᴇssғᴜʟʟʏ ᴅᴇʟᴇᴛᴇᴅ</b>")
