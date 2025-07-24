@@ -776,7 +776,9 @@ async def auto_filter(client, msg, spoll=False):
             logger.exception("Template formatting failed")
             cap = f"**🎬 Search result for:** {search}"
     else:
-        cap = f"__🤖 Beep boop! I found something interesting for:__ **{search}**"
+        cap = f"__🔰Yᴏᴜʀ Fɪʟᴇs Aʀᴇ Rᴇᴀᴅʏ Nᴏᴡ🔰
+
+                  🔻Tᴀᴘ ᴏɴ Tʜᴇ ғɪʟᴇ ʙᴜᴛᴛᴏɴ ᴀɴᴅ ᴛʜᴇɴ sᴛᴀʀᴛ ᴛᴏ ᴅᴏᴡɴʟᴏᴀᴅ 🔻:__ **{search}**"
 
     # ✅ Send response
     try:
