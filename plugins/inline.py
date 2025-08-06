@@ -87,7 +87,7 @@ async def answer(bot, query):
                 ),
                 description="Click to join our update channel!",
                 reply_markup=InlineKeyboardMarkup([
-                    [InlineKeyboardButton("🚀 Join Now", url="https://t.me/CTUpdatez")]
+                    [InlineKeyboardButton("🚀 Join Now", url="https://t.me/+KJHSwIdswKUwZjU1")]
                 ])
             )
         )
