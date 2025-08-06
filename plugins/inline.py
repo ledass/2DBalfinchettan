@@ -59,25 +59,50 @@ async def answer(bot, query):
                                                   max_results=10,
                                                   offset=offset)
 
-    for file in files:
-        title=file.file_name
-        size=get_size(file.file_size)
-        f_caption=file.caption
-        if CUSTOM_FILE_CAPTION:
-            try:
-                f_caption=CUSTOM_FILE_CAPTION.format(file_name= '' if title is None else title, file_size='' if size is None else size, file_caption='' if f_caption is None else f_caption)
-            except Exception as e:
-                logger.exception(e)
-                f_caption=f_caption
-        if f_caption is None:
-            f_caption = f"{file.file_name}"
+    for index, file in enumerate(files):
+    title = file.file_name
+    size = get_size(file.file_size)
+    f_caption = file.caption
+
+    if CUSTOM_FILE_CAPTION:
+        try:
+            f_caption = CUSTOM_FILE_CAPTION.format(
+                file_name=title or '',
+                file_size=size or '',
+                file_caption=f_caption or ''
+            )
+        except Exception as e:
+            logger.exception(e)
+            f_caption = f_caption
+    if f_caption is None:
+        f_caption = f"{file.file_name}"
+
+    # ✅ Add custom "CT- Updatez... 🍿" button in the middle
+    if index == len(files) // 2:
         results.append(
-            InlineQueryResultCachedDocument(
-                title=file.file_name,
-                document_file_id=file.file_id,
-                caption=f_caption,
-                description=f'Size: {get_size(file.file_size)}\nType: {file.file_type}',
-                reply_markup=reply_markup))
+            InlineQueryResultArticle(
+                title="📣 CT- Updatez... 🍿",
+                input_message_content=InputTextMessageContent(
+                    message_text="📣 Join our updates channel: @CTUpdatez"
+                ),
+                description="Click to join our update channel!",
+                reply_markup=InlineKeyboardMarkup([
+                    [InlineKeyboardButton("🚀 Join Now", url="https://t.me/CTUpdatez")]
+                ])
+            )
+        )
+
+    # 📁 Add the actual file
+    results.append(
+        InlineQueryResultCachedDocument(
+            title=title,
+            document_file_id=file.file_id,
+            caption=f_caption,
+            description=f'Size: {size}\nType: {file.file_type}',
+            reply_markup=reply_markup
+        )
+    )
+    
 
     if results:
         switch_pm_text = f"{emoji.FILE_FOLDER} Results - {total}"
